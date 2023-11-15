@@ -1,3 +1,11 @@
 .local
 .ipython
 .cache
+venv
+.virtualenvs
+.profile
+.bashrc
+.pythonstartup
+.vimrc
+static
+__pycache__
