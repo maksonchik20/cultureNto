@@ -1,11 +1,8 @@
 from pathlib import Path
+import os
 
 # hello
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-xam6c7%)z2!_faapqjf*nf&z!!idacr3@58ypsuusdowdmsjb7'
@@ -13,7 +10,7 @@ SECRET_KEY = 'django-insecure-xam6c7%)z2!_faapqjf*nf&z!!idacr3@58ypsuusdowdmsjb7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['culture.pythonanywhere.com']
+ALLOWED_HOSTS = ['culture.pythonanywhere.com', "localhost"]
 
 
 # Application definition
@@ -91,28 +88,59 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
+LANGUAGE_CODE = 'ru'
+# TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 USE_I18N = True
-
 USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
+# для AbstractUser
+# AUTH_USER_MODEL = 'main.User'
+
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
+
+# для отправки почты, если будет
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'email'
+# EMAIL_HOST_PASSWORD = 'password'
+# EMAIL_USE_TLS = True # Возможно убрать
+# LOGIN_REDIRECT_URL = 'blog-home'
+
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # default static files settings for PythonAnywhere.
 # see https://help.pythonanywhere.com/pages/DjangoStaticFiles for more info
-MEDIA_ROOT = '/home/culture/cultureNto/media'
-MEDIA_URL = '/media/'
-STATIC_ROOT = '/home/culture/cultureNto/static'
+
+
+# STAICS
+
+# MEDIA_ROOT = '/home/culture/cultureNto/media'
+# MEDIA_URL = '/media/'
+# STATIC_ROOT = '/home/culture/cultureNto/static'
+# STATIC_URL = '/static/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# MEDIA_URL = '/media/'
+# STATIC_ROOT = '/home/hostelBusiness/hostel/static'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
+# STATICFILES_DIRS = [
+#     BASE_DIR / 'static'
+# ]
+
+
+CKEDITOR_UPLOAD_PATH = "uploads/"
+CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
