@@ -9,3 +9,4 @@ venv
 .vimrc
 static
 __pycache__
+README.txt
