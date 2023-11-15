@@ -8,5 +8,4 @@ venv
 .pythonstartup
 .vimrc
 static
-/cultureNto/static
 __pycache__
