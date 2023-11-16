@@ -7,7 +7,9 @@ venv
 .bashrc
 .pythonstartup
 .vimrc
-static
+cultureNto/static/admin
+cultureNto/static/django_tables2
+
 __pycache__
 README.txt
 migrations

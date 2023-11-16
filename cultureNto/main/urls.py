@@ -5,5 +5,11 @@ from django.conf.urls.static import static
 from .views import *
 
 urlpatterns = [
-    path('', main)
+    path('base/', base),
+    path('', index),
+    path("razvlech/", tableRender, name="razvlech"),
+    path("prosvesh/", tableRender),
+    path("education/", tableRender),
+    path("createData/", createData),
+    # path("tabletest/", tableRender)
 ]
