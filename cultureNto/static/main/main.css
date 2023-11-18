@@ -7,15 +7,18 @@ h1, h2, h3, h4, h5, h6 {
     padding: 0;
 }
 
-.index-page-header {
+.index-page-header, .top, .bottom {
     margin: 0;
     padding: 0;
     overflow: hidden;
     display: flex;
     place-items: center;
     flex-direction: row;
-    
     background-color: rebeccapurple;
+}
+
+.bottom {
+    gap: 1vw;
 }
 
 .index-page-header h1 {
@@ -37,7 +40,8 @@ h1, h2, h3, h4, h5, h6 {
     margin: 0;
     padding: 2vh;
     background-color: bisque;
-    height: 100vh;
+    height: auto;
+    min-height: 100%;
 }
 
 .index-page-content a {
@@ -74,6 +78,49 @@ form button.nopadbtn {
     margin-top: 0rem;
 }
 
-.returnHome {
-    font-size: 3vh;
+.returnHome, .goAdmin, .category {
+    font-size: 1.5vw;
+}
+
+.headerLinks {
+    display: flex;
+    justify-content: space-between;
+    width: auto;
+}
+
+.bottom h3 {
+    color:white;
+}
+
+.addNewEvent {
+    font-size: 2vw !important;
+}
+
+.btnAddNewEvent {
+    border: 2px solid rebeccapurple;
+    padding: 5px;
+    border-radius: 6px;
+}
+
+.btnAddNewEvent:hover {
+    background-color: rebeccapurple;
+    color:white;
+    border-color: rebeccapurple;
+    transition: all 0.2s linear;
+}
+
+.index_div {
+    text-align: center;
+}
+
+.index_img {
+    width: 100%; /* Ширина области */
+    height: 55vh; /* Высота области */
+    margin: 0; /* Обнуляем отступы */
+}
+
+.index_img img {
+    width: 100%; /* Ширина изображений */
+    height: 100%; /* Высота изображении */
+    object-fit: contain; /* Вписываем фотографию в область */
 }
