@@ -40,7 +40,8 @@ h1, h2, h3, h4, h5, h6 {
     margin: 0;
     padding: 2vh;
     background-color: bisque;
-    height: 100vh;
+    height: auto;
+    min-height: 100%;
 }
 
 .index-page-content a {
@@ -106,4 +107,20 @@ form button.nopadbtn {
     color:white;
     border-color: rebeccapurple;
     transition: all 0.2s linear;
+}
+
+.index_div {
+    text-align: center;
+}
+
+.index_img {
+    width: 100%; /* Ширина области */
+    height: 55vh; /* Высота области */
+    margin: 0; /* Обнуляем отступы */
+}
+
+.index_img img {
+    width: 100%; /* Ширина изображений */
+    height: 100%; /* Высота изображении */
+    object-fit: contain; /* Вписываем фотографию в область */
 }

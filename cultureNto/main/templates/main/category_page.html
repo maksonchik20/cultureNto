@@ -3,14 +3,14 @@
 {% load export_url from django_tables2 %}
 
 {% block content %}
-{% if table %} 
+    {% if table %} 
         <p style="text-align:center;">
             <a class="btnAddNewEvent" style="text-decoration: none;" href="/admin/main/event/add/?category={{ cat }}">
-            Добавить новое мероприятие для категории {{ cat }}
+            Добавить новое мероприятие
             </a>
         </p>
         {% render_table table %}
-        <h3>Экспортирование таблицы:</h3>
+        <h3>Экспортирование данных о мероприятиях:</h3>
         <a href="{% export_url 'xls' %}">
             Скачать  <code>.{{ 'xls' }}</code>
         </a><br>
@@ -20,5 +20,10 @@
         <a href="{% export_url 'json' %}">
             Скачать  <code>.{{ 'json' }}</code>
         </a>
+    {% endif %}
+    {% if cat == "Образование" %}
+    <div style="text-align: center;">
+        <h1>Скоро здесь появится информация о событиях</h1>
+    </div>
     {% endif %}
 {% endblock %}

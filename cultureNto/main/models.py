@@ -13,18 +13,18 @@ class EventType(models.Model):
         verbose_name_plural = 'Виды мероприятий'
 
 class Event(models.Model):
-    CATEGORY = (
-        ("Развлечения", "Развлечения"),
-        ("Просвещение", "Просвещение")
-    )
+    # CATEGORY = (
+    #     ("Развлечения", "Развлечения"),
+    #     ("Просвещение", "Просвещение")
+    # )
     date = models.DateField(verbose_name="Дата мероприятия", default=datetime.date.today)
     time = models.TimeField(verbose_name="Время мероприятия")
     type_event = models.ForeignKey(EventType, on_delete=models.PROTECT, verbose_name="Вид мероприятия")
     description = models.TextField(verbose_name="Описание")
-    category = models.CharField(choices=CATEGORY, verbose_name="Категория", max_length=255, default="Развлечения")
+    # category = models.CharField(choices=CATEGORY, verbose_name="Категория", max_length=255, default="Развлечения")
 
     def __str__(self):
-        return f"Категория: {self.category}. Дата: {self.date.day}.{self.date.month}.{self.date.year} Время: {self.time.hour}:{self.time.minute}. Вид мероприятия: {self.type_event}"
+        return f"Дата: {self.date.day}.{self.date.month}.{self.date.year} Время: {self.time.hour}:{self.time.minute}. Вид мероприятия: {self.type_event}"
 
     class Meta:
         verbose_name = 'Мероприятие'

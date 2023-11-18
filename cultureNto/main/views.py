@@ -18,14 +18,14 @@ def index(request):
         "title": "Главная Страница",
         "header_text": "Главная страница"
     }
-    return redirect("razvlech")
-    # return render(request, "main/index.html", data)
+    # return redirect("razvlech")
+    return render(request, "main/index.html", data)
 
 def createData(request):
     # eventTypes = ["Спектакль", "Концерт", "Репетиция", "Выставка", "Секции"]
     # for et in eventTypes:
     #     EventType.objects.create(name_event_type=et)
-    event = [("19.11.2023", "8.00 PM", "Спектакль", "Просвещение", """"Волшебная Ночь Звезд: Театральное Путешествие"
+    event = [("19.11.2023", "8.00 PM", "Спектакль", """"Волшебная Ночь Звезд: Театральное Путешествие"
 
 Добро пожаловать на удивительное театральное событие, которое разгадывает тайны ночного неба! Спектакль "Волшебная Ночь Звезд" приглашает вас в захватывающее путешествие по звездному космосу, где каждая звезда рассказывает свою уникальную историю.
 
@@ -39,7 +39,7 @@ def createData(request):
 На этой выставке каждая картина, скульптура или фотография - это не просто произведение искусства, а настоящая история, рассказанная визуальным языком. Вы сможете окунуться в мир красок, форм и эмоций, испытывая гармонию и восторг от каждого произведения.
 
 "Гармония Творчества" приглашает вас на увлекательное путешествие по искусству, где каждое произведение станет мостом между разными культурами, стилями и выражениями. Приходите на выставку в наш галерейный пространство 25 числа, чтобы поддаться волшебству творчества и насладиться красотой многообразия художественных форм. Это событие станет вдохновляющим праздником искусства для всех любителей красоты и творчества."""),
-("22.01.2024", "10.00 AM", "Репетиция", "Развлечения", """"Магия Творческого Слияния: Репетиция Симфонии 25.01.2024"
+("22.01.2024", "10.00 AM", "Репетиция", """"Магия Творческого Слияния: Репетиция Симфонии 25.01.2024"
 
 22 января 2024 года приглашаем вас стать свидетелями захватывающего момента творчества на репетиции уникальной симфонии "Магия Творческого Слияния". Этот вечер будет посвящен звуковому слиянию инструментов и голосов, создающих мощный вихрь эмоций и вдохновения.
 
@@ -51,8 +51,7 @@ def createData(request):
         Event.objects.create(date=datetime.strptime(ev[0], "%d.%m.%Y"),
                             time=datetime.strptime(ev[1], "%I.%M %p"),
                             type_event = EventType.objects.get(name_event_type=ev[2]),
-                            category=ev[3],
-                            description = ev[4],
+                            description = ev[3],
                             )
     return render(request, "main/index.html")
 
@@ -61,12 +60,6 @@ def createData(request):
 #     table_class = EventTabel
 #     table_data = Event.objects.filter(category="Развлечения")
 #     template_name = 'main/table.html'
-
-# class EventRazvlechListView(ExportMixin, SingleTableView):
-#     model = Event
-#     table_class = EventTabel
-#     table_data = Event.objects.filter(category="Развлечения")
-#     template_name = 'main/table_razvlech.html'
 
 def tableRender(request):
     sl = {
@@ -85,8 +78,8 @@ def tableRender(request):
             "cat": cat
         }
     if ("prosvesh" in request.path or "razvlech" in request.path):
-        table = EventTabel(Event.objects.filter(category=cat))
-        RequestConfig(request, paginate={"per_page": 1}).configure(table)
+        table = EventTabel(Event.objects.all())
+        RequestConfig(request, paginate={"per_page": 2}).configure(table)
         export_format = request.GET.get("_export", None)
         if TableExport.is_valid_format(export_format):
             exporter = TableExport(export_format, table)
