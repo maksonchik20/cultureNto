@@ -1,0 +1,53 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'main/tableWork.css' %}" />
+{% endblock head %}
+    
+{% block content %}
+<form action="" method="get">
+    <label for="workType">Выберите вид работ:</label>
+    <select id="workType" class="selectWorkType" name="select">
+        <option value="all" name="all">Все виды работ</option>
+        
+        {% for el in workTypes %}
+        <option value="{{el.name}}" name="{{el.name}}">{{el.name}}</option>
+        {% endfor %}
+    </select>
+    <button type="submit" class="workTypeBtnSubmit">Изменить таблицу</button>
+</form>
+
+<section class="desktop">
+    <table>
+        <thead>
+            <tr>
+                <th>Дата Регистрации</th>
+                <th>Вид работ</th>
+                <th>Срок выполнения</th>
+                <th>Мероприятие</th>
+                <th>Помещение</th>
+                <th>Описание</th>
+                <th>Выполнено</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for el in objects %}
+                <tr>
+                    <td>{{el.date}} {{el.time}}</td>
+                    <td>{{el.work_type}}</td>
+                    <td>{{el.date_end}} {{el.time_end}}</td>
+                    <td>{{el.event}}</td>
+                    <td>{{el.room}}</td>
+                    <td>{{el.description}}</td>
+                    <td>
+                        <form action="" method="get">
+                            <button name="del" type="submit" class="workTypeBtnSubmit" value="{{el.pk}}">Изменить на Выполнено</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

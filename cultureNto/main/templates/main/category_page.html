@@ -3,6 +3,11 @@
 {% load export_url from django_tables2 %}
 
 {% block content %}
+    <p style="text-align:center;">
+        <a class="btnAddNewEvent" style="text-decoration: none;" href="/rooms">
+            Помещения
+        </a>
+    </p>
     {% if table %} 
         <p style="text-align:center;">
             <a class="btnAddNewEvent" style="text-decoration: none;" href="/admin/main/event/add/?category={{ cat }}">
@@ -22,8 +27,6 @@
         </a>
     {% endif %}
     {% if cat == "Образование" %}
-    <div style="text-align: center;">
-        <h1>Скоро здесь появится информация о событиях</h1>
-    </div>
+    {% comment %} {% render_table rooms %} {% endcomment %}
     {% endif %}
 {% endblock %}

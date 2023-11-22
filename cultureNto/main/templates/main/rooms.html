@@ -1,0 +1,24 @@
+{% extends 'main/base.html' %}
+{% load render_table from django_tables2 %}
+{% load export_url from django_tables2 %}
+
+{% block content %}
+    {% if table %} 
+        <p style="text-align:center;">
+            <a class="btnAddNewEvent" style="text-decoration: none;" href="/admin/main/rooms/add/">
+            Добавить новое помещение
+            </a>
+        </p>
+        {% render_table table %}
+        <h3>Экспортирование данных о помещениях:</h3>
+        <a href="{% export_url 'xls' %}">
+            Скачать  <code>.{{ 'xls' }}</code>
+        </a><br>
+        <a href="{% export_url 'xlsx' %}">
+            Скачать  <code>.{{ 'xlsx' }}</code>
+        </a><br>
+        <a href="{% export_url 'json' %}">
+            Скачать  <code>.{{ 'json' }}</code>
+        </a>
+    {% endif %}
+{% endblock %}

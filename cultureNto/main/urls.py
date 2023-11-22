@@ -11,5 +11,9 @@ urlpatterns = [
     path("prosvesh/", tableRender),
     path("education/", tableRender),
     path("createData/", createData),
+    path("worktable/", worktable),
+    path("start_workers_page/", start_workers_page),
+    path("rooms/", roomsRender)
+    
     # path("tabletest/", tableRender)
 ]

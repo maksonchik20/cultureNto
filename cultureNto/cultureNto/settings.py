@@ -26,7 +26,7 @@ INSTALLED_APPS = [
     'main',
 
     'django_tables2',
-    
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
