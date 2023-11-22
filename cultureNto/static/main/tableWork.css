@@ -1,0 +1,86 @@
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: rebeccapurple;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+}
+
+.filters {
+    padding: 20px;
+    background-color: #eee;
+}
+
+.desktop {
+    padding: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: rebeccapurple;
+    color: #fff;
+}
+
+label {
+    margin-right: 10px;
+}
+
+.workTypeBtnSubmit {
+    border: 2px solid rebeccapurple;
+    padding: 5px;
+    border-radius: 6px;
+    background-color: transparent;
+}
+
+.workTypeBtnSubmit:hover {
+    background-color: rebeccapurple;
+    color:white;
+    border-color: rebeccapurple;
+    transition: all 0.2s linear;
+}
+
+.selectWorkType {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    height: 5vh;
+    padding: 1vh;
+    background: #fff url("select-arrows.svg") no-repeat right 16px center;
+    background-size: 10px;
+    transition: border-color .1s ease-in-out,box-shadow .1s ease-in-out;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+.selectWorkType:hover {
+    border: 1px solid #999;
+}
+.selectWorkType:focus {
+    border: 1px solid #999;
+    box-shadow: 0 3px 5px 0 rgba(0,0,0,.2);
+    outline: none;
+}
+/* remove default arrow in IE */
+select::-ms-expand {
+    display:none;
+}
+
+.selectWorkType {
+    font-family: "Source Sans Pro", sans-serif;
+    font-size: 1.6rem;
+}
