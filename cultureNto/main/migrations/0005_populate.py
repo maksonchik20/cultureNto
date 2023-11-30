@@ -1,7 +1,6 @@
 import datetime
-import os
-
 from django.db import migrations
+from django.db.models import Q
 
 
 def populate_event_type(apps, schema_editor):
@@ -83,23 +82,26 @@ def populate_event(apps, schema_editor):
 
 def populate_room(apps, schema_editor):
     Room = apps.get_model("main", "Room")
+    EventLocation = apps.get_model("main", "EventLocation")
 
-    Room.objects.using(schema_editor.connection.alias).bulk_create(
-        [
-            Room(name="Арт-галерея", cnts=2),
-            Room(name="Выставочный зал", cnts=2),
-            Room(name="Театральная сцена", cnts=1),
-            Room(name="Конференц-зал", cnts=1),
-            Room(name="Мастерская", cnts=1),
-            Room(name="Танцевальный зал", cnts=2),
-            Room(name="Гардероб", cnts=1),
-            Room(name="Кафе", cnts=1),
-            Room(name="Библиотека", cnts=1),
-            Room(name="Лекторий", cnts=1),
-            Room(name="Комната отдыха для артистов", cnts=1),
-            Room(name="Комната звукооператора и светотехника", cnts=1),
-        ]
-    )
+    def room(room_id: int, room_name: str, query):
+        room_ = Room(id=room_id, name=room_name)
+        room_.save()
+        room_.locations.add(EventLocation.objects.filter(query).first())
+        return room_
+
+    room(1, "Арт-галерея", Q(name="Арт-галерея (1-й сектор)") | Q(name="Арт-галерея (2-й сектор)"))
+    room(2, "Выставочный зал", Q(name="Выставочный зал (1-й сектор)") | Q(name="Выставочный зал (2-й сектор)"))
+    room(3, "Театральная сцена", Q(name="Театральная сцена"))
+    room(4, "Конференц-зал", Q(name="Конференц-зал"))
+    room(5, "Мастерская", Q(name="Мастерская"))
+    room(6, "Танцевальный зал", Q(name="Танцевальный зал (1-й сектор)") | Q(name="Танцевальный зал (2-й сектор)"))
+    room(7, "Гардероб", Q(name="Гардероб"))
+    room(8, "Кафе", Q(name="Кафе"))
+    room(9, "Библиотека", Q(name="Библиотека"))
+    room(10, "Лекторий", Q(name="Лекторий"))
+    room(11, "Комната отдыха для артистов", Q(name="Комната отдыха для артистов"))
+    room(12, "Комната звукооператора и светотехника", Q(name="Комната звукооператора и светотехника"))
 
 
 def populate_worktype(apps, schema_editor):
@@ -227,7 +229,7 @@ def generate_superuser(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("main", "0002_booking"),
+        ("main", "0004_populate_locations"),
     ]
 
     operations = [

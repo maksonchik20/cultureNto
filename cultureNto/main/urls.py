@@ -16,7 +16,8 @@ urlpatterns = [
     path("rooms/", roomsRender),
     path("events/", events),
 
-    path("admin/brone", page_brone)
+    path("admin/brone", page_brone),
+    path("add_brone/<int:pk>", add_brone)
     
     # path("tabletest/", tableRender)
 ]

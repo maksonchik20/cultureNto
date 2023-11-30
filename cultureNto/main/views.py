@@ -1,12 +1,9 @@
-from datetime import datetime
-from django.shortcuts import render, redirect
-from django_tables2 import SingleTableView, RequestConfig
-from django_tables2.export.views import ExportMixin
-from .models import Event, EventType, Work, WorkType, Room, Booking
+from django.shortcuts import render
+from django_tables2 import RequestConfig
+from .models import Event, Work, WorkType, Room, Booking
 from .tables import EventTable, RoomTable
 from django_tables2.export.export import TableExport
-from django.db.models import Q
-from .utils import Ready
+
 
 def base(request):
     data = {
@@ -15,6 +12,7 @@ def base(request):
     }
     return render(request, "main/base.html", data)
 
+
 def index(request):
     data = {
         "title": "Главная Страница",
@@ -22,6 +20,7 @@ def index(request):
     }
     # return redirect("razvlech")
     return render(request, "main/index.html", data)
+
 
 def createData(request):
     # eventTypes = ["Спектакль", "Концерт", "Репетиция", "Выставка", "Секции"]
@@ -80,6 +79,7 @@ def createData(request):
 #     table_data = Event.objects.filter(category="Развлечения")
 #     template_name = 'main/table.html'
 
+
 def tableRender(request):
     sl = {
         "prosvesh": "Просвещение",
@@ -109,6 +109,7 @@ def tableRender(request):
     data["rooms"] = tableRoom
     return render(request, "main/category_page.html", data)
 
+
 def roomsRender(request):
     data = {"title": f"Страница Помещений",
             "header_text": f"Страница Помещений",
@@ -121,6 +122,7 @@ def roomsRender(request):
         return exporter.response(f"table.{export_format}")
     data["table"] = table
     return render(request, "main/rooms.html", data)
+
 
 def worktable(request):
     if (request.GET.get("del", None) is not None and Work.objects.filter(pk=request.GET.get("del", None)).exists()):
@@ -136,6 +138,7 @@ def worktable(request):
             obj = Work.objects.filter(work_type=WorkType.objects.get(name=work_type), status="К выполнению")
     data = {'title': "Рабочий стол для заявок", "header_text": "Рабочий стол для заявок", "objects": obj, "workTypes": WorkType.objects.all()}
     return render(request, "main/worktable.html", data)
+
 
 def start_workers_page(request):
     data = {
@@ -154,9 +157,20 @@ def events(request):
     }
     return render(request, "main/events.html", data)
 
+
 def page_brone(request):
     data = {
         "title": "Страница бронирования"
     }
-    return render(request, "main/brone_page.html", data)
+    return render(request, "main/admin_page.html", data)
 
+
+def add_brone(request, pk):
+    room = Room.objects.filter(id=pk).first()
+    booking = Booking.objects.filter(locations__id__in=room.locations.all())
+    data = {
+        "title": "Страница бронирования",
+        "booking": booking,
+        "room": room
+    }
+    return render(request, "main/brone_page.html", data)

@@ -1,8 +1,9 @@
 from django.contrib import admin
-from .models import EventType, Event, Work, WorkType, Room, Booking
+from .models import EventType, Event, Work, WorkType, Room, Booking, EventLocation
 from django.utils.html import format_html
 
 admin.site.register(EventType)
+
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
@@ -21,14 +22,18 @@ class EventAdmin(admin.ModelAdmin):
     #     print(form)
     #     return form
 
+
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
-    list_display = ("name", "cnts", "btn_brone")
+    list_display = ("name", "btn_brone")
     def btn_brone(self, obj):
-        return format_html(f'<a href="/add_brone?pk={obj.pk}" class="btn_brone">Забронировать данное помещение</a>')
+        return format_html(f'<a href="/add_brone/{obj.pk}" class="btn_brone">Забронировать данное помещение</a>')
     btn_brone.short_description = "Забронировать"
 
+
 admin.site.register(WorkType)
+admin.site.register(EventLocation)
+
 
 @admin.register(Work)
 class WorkAdmin(admin.ModelAdmin):
@@ -49,11 +54,12 @@ class WorkAdmin(admin.ModelAdmin):
     color_status.short_description = "Статус заявки"
     small_description.short_description  = "Описание"
 
+
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):
     # list_display = ("event", "room", "date_start", "date_end", "cnt_section", "date_create", "comment")
     def has_add_permission(self, request, obj=None):
         return False
+
     def has_change_permission(self, request, obj=None):
         return False
-    
