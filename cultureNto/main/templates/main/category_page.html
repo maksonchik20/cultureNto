@@ -3,6 +3,7 @@
 {% load export_url from django_tables2 %}
 
 {% block content %}
+    <div class="maincontainer">
     <p style="text-align:center;">
         <a class="btnAddNewEvent" style="text-decoration: none;" href="/rooms">
             Помещения
@@ -29,4 +30,10 @@
     {% if cat == "Образование" %}
     {% comment %} {% render_table rooms %} {% endcomment %}
     {% endif %}
+    </div>
+    <style>
+        div .maincontainer {
+            margin: 2rem;
+        }
+    </style>
 {% endblock %}

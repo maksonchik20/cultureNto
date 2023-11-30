@@ -3,6 +3,7 @@
 {% load export_url from django_tables2 %}
 
 {% block content %}
+    <div class="maincontainer">
     {% if table %} 
         <p style="text-align:center;">
             <a class="btnAddNewEvent" style="text-decoration: none;" href="/admin/main/rooms/add/">
@@ -21,4 +22,10 @@
             Скачать  <code>.{{ 'json' }}</code>
         </a>
     {% endif %}
+    </div>
+    <style>
+        div .maincontainer {
+            margin: 2rem;
+        }
+    </style>
 {% endblock %}

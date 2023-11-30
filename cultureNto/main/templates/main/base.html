@@ -5,8 +5,12 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" crossorigin="anonymous" />
+
     <link rel="stylesheet" href="{% static 'main/main.css' %}" />
     {% block head %}
     {% endblock %}
@@ -28,26 +32,93 @@
                     <h1> | </h1>
                     <a href="/start_workers_page" class="goAdmin" style="color: aqua;">Сотрудникам</a>
                 </div>
-                <div class="bottom">
-                    <h3>Категории:</h3>
-                    <a href="/razvlech" class="category" style="display:flex;justify-content:flex-end;color: aqua;">
-                        Развлечения
-                    </a>
-                    <h1> | </h1>
-                    <a href="/prosvesh" class="category" style="display:flex;justify-content:flex-end;color: aqua;">
-                        Просвещение
-                    </a>
-                    <h1> | </h1>
-                    <a href="/education" class="category" style="display:flex;justify-content:flex-end;color: aqua;">
-                        Образование
-                    </a>
-                </div>
             </div>
         </div>
         <div class="index-page-content">
-            {% block content %}
-            {% endblock %}
+            <div class="sidepanel">
+                 <div class="group">
+                     <a>Категории:</a>
+                 </div>
+                 <div class="spacer"></div>
+                 <div class="groupitem">
+                     <a href="/razvlech">Развлечения</a>
+                 </div>
+                 <div class="spacer"></div>
+                 <div class="groupitem">
+                     <a href="/prosvesh">Просвещение</a>
+                 </div>
+                 <div class="spacer"></div>
+                 <div class="groupitem">
+                     <a href="/education">Образование</a>
+                 </div>
+                 <div class="longspacer"></div>
+                 <div class="group">
+                     <a href="/events">Мероприятия</a>
+                 </div>
+            </div>
+            <div class="mainpanel">
+                {% block content %}
+                {% endblock %}
+            </div>
         </div>
     </div>
 </body>
+ <style>
+        div.index-page-content {
+            display: flex;
+            height: 100%;
+            flex-direction: row;
+        }
+
+        div.sidepanel {
+            min-width: 20%;
+            height: 100%;
+            background-color: #ddc6aa;
+        }
+
+        div.sidepanel .spacer {
+            background-color: #b7a897;
+            height: 0.25rem;
+        }
+
+        div.sidepanel .longspacer {
+            background-color: #b7a897;
+            height: 1rem;
+        }
+
+        div.sidepanel .group, div.sidepanel .groupitem {
+            display: flex;
+        }
+
+        div.sidepanel .group {
+            background-color: #c9b69f;
+        }
+
+        div.sidepanel .groupitem {
+            background-color: #c9b69f;
+        }
+
+        div.sidepanel .group a, div.sidepanel .groupitem a {
+            font-size: xx-large;
+        }
+
+        div.sidepanel .group a {
+            margin-left: 2rem;
+        }
+
+        div.sidepanel .groupitem a {
+            color: rebeccapurple;
+            margin-left: 4rem;
+        }
+
+        div.mainpanel {
+            bottom: 0;
+            margin: 2rem;
+            display: flex;
+            width: 100%;
+            align-items: center;
+            flex-direction: column;
+        }
+    </style>
 </html>
+

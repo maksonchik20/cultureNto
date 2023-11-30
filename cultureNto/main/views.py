@@ -141,3 +141,13 @@ def start_workers_page(request):
         "header_text": "Страница для сотрудников",
     }
     return render(request, "main/workers.html", data)
+
+
+def events(request):
+    ev = Event.objects.all()
+    data = {
+        'title': "Мероприятия",
+        "header_text": "Страница Мероприятия",
+        "events": ev
+    }
+    return render(request, "main/events.html", data)
