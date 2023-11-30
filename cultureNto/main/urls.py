@@ -13,7 +13,8 @@ urlpatterns = [
     path("createData/", createData),
     path("worktable/", worktable),
     path("start_workers_page/", start_workers_page),
-    path("rooms/", roomsRender)
+    path("rooms/", roomsRender),
+    path("admin/brone", page_brone)
     
     # path("tabletest/", tableRender)
 ]

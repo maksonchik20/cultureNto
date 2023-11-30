@@ -44,7 +44,7 @@ ROOT_URLCONF = 'cultureNto.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, "main/templates/")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -97,7 +97,7 @@ LANGUAGE_CODE = 'ru'
 # TIME_ZONE = 'UTC'
 TIME_ZONE = 'Europe/Moscow'
 USE_I18N = True
-USE_TZ = True
+# USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
@@ -145,6 +145,7 @@ STATIC_URL = '/static/'
 # STATICFILES_DIRS = [
 #     BASE_DIR / 'static'
 # ]
+
 
 
 CKEDITOR_UPLOAD_PATH = "uploads/"

@@ -2,9 +2,11 @@ from datetime import datetime
 from django.shortcuts import render, redirect
 from django_tables2 import SingleTableView, RequestConfig
 from django_tables2.export.views import ExportMixin
-from .models import Event, EventType, Work, WorkType, Rooms
+from .models import Event, EventType, Work, WorkType, Rooms, Booking
 from .tables import EventTable, RoomTable
 from django_tables2.export.export import TableExport
+from django.db.models import Q
+from .utils import Ready
 
 def base(request):
     data = {
@@ -141,3 +143,11 @@ def start_workers_page(request):
         "header_text": "Страница для сотрудников",
     }
     return render(request, "main/workers.html", data)
+
+def page_brone(request):
+    data = {
+        "title": "Страница бронирования"
+    }
+    return render(request, "main/brone_page.html", data)
+    
+    
