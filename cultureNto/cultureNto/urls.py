@@ -8,7 +8,7 @@ admin.site.site_title = "Администрирование Культуры"
 admin.site.site_header = "Администрирование Культуры"
 
 urlpatterns = [
+    path('', include('main.urls')),
     path('admin/', admin.site.urls),
-    path('', include('main.urls'))
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

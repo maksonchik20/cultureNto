@@ -2,9 +2,11 @@ from datetime import datetime
 from django.shortcuts import render, redirect
 from django_tables2 import SingleTableView, RequestConfig
 from django_tables2.export.views import ExportMixin
-from .models import Event, EventType, Work, WorkType, Rooms
+from .models import Event, EventType, Work, WorkType, Rooms, Booking
 from .tables import EventTable, RoomTable
 from django_tables2.export.export import TableExport
+from django.db.models import Q
+from .utils import Ready
 
 def base(request):
     data = {
@@ -142,6 +144,7 @@ def start_workers_page(request):
     }
     return render(request, "main/workers.html", data)
 
+<<<<<<< HEAD
 
 def events(request):
     ev = Event.objects.all()
@@ -151,3 +154,12 @@ def events(request):
         "events": ev
     }
     return render(request, "main/events.html", data)
+=======
+def page_brone(request):
+    data = {
+        "title": "Страница бронирования"
+    }
+    return render(request, "main/brone_page.html", data)
+    
+    
+>>>>>>> 4e2f7ef7db715ab957dbad3de51425564d269c00
