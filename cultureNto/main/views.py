@@ -2,7 +2,7 @@ from datetime import datetime
 from django.shortcuts import render, redirect
 from django_tables2 import SingleTableView, RequestConfig
 from django_tables2.export.views import ExportMixin
-from .models import Event, EventType, Work, WorkType, Rooms, Booking
+from .models import Event, EventType, Work, WorkType, Room, Booking
 from .tables import EventTable, RoomTable
 from django_tables2.export.export import TableExport
 from django.db.models import Q
@@ -104,7 +104,7 @@ def tableRender(request):
             exporter = TableExport(export_format, table)
             return exporter.response(f"table.{export_format}")
         data["table"] = table
-    tableRoom = RoomTable(Rooms.objects.all())
+    tableRoom = RoomTable(Room.objects.all())
     RequestConfig(request, paginate={"per_page": 8}).configure(tableRoom)
     data["rooms"] = tableRoom
     return render(request, "main/category_page.html", data)
@@ -113,7 +113,7 @@ def roomsRender(request):
     data = {"title": f"Страница Помещений",
             "header_text": f"Страница Помещений",
         }
-    table = RoomTable(Rooms.objects.all())
+    table = RoomTable(Room.objects.all())
     RequestConfig(request, paginate={"per_page": 8}).configure(table)
     export_format = request.GET.get("_export", None)
     if TableExport.is_valid_format(export_format):
@@ -144,7 +144,6 @@ def start_workers_page(request):
     }
     return render(request, "main/workers.html", data)
 
-<<<<<<< HEAD
 
 def events(request):
     ev = Event.objects.all()
@@ -154,12 +153,10 @@ def events(request):
         "events": ev
     }
     return render(request, "main/events.html", data)
-=======
+
 def page_brone(request):
     data = {
         "title": "Страница бронирования"
     }
     return render(request, "main/brone_page.html", data)
-    
-    
->>>>>>> 4e2f7ef7db715ab957dbad3de51425564d269c00
+

@@ -1,5 +1,5 @@
 import django_tables2 as tables
-from .models import Event, Rooms
+from .models import Event, Room
 
 class EventTable(tables.Table):
     class Meta:
@@ -9,6 +9,6 @@ class EventTable(tables.Table):
 
 class RoomTable(tables.Table):
     class Meta:
-        model = Rooms
+        model = Room
         template_name = "django_tables2/bootstrap.html"
         fields = ("name", )

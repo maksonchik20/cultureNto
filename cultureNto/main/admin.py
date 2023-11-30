@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import EventType, Event, Work, WorkType, Rooms, Booking
+from .models import EventType, Event, Work, WorkType, Room, Booking
 from django.utils.html import format_html
 
 admin.site.register(EventType)
@@ -21,8 +21,8 @@ class EventAdmin(admin.ModelAdmin):
     #     print(form)
     #     return form
 
-@admin.register(Rooms)
-class RoomsAdmin(admin.ModelAdmin):
+@admin.register(Room)
+class RoomAdmin(admin.ModelAdmin):
     list_display = ("name", "cnts", "btn_brone")
     def btn_brone(self, obj):
         return format_html(f'<a href="/add_brone?pk={obj.pk}" class="btn_brone">Забронировать данное помещение</a>')

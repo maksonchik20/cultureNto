@@ -38,7 +38,7 @@ class WorkType(models.Model):
         verbose_name = 'Вид работы'
         verbose_name_plural = 'Виды работ'
 
-class Rooms(models.Model):
+class Room(models.Model):
     name = models.CharField(verbose_name="Название помещения", max_length=255)
     cnts = models.PositiveIntegerField(verbose_name="Количество частей помещения",
     help_text="""Если этот параметр равен 0, то помещение нельзя забронировать.
@@ -64,7 +64,7 @@ class Work(models.Model):
     time = models.TimeField(verbose_name="Время регистрации заявки")
     event = models.ForeignKey(Event, on_delete=models.CASCADE, verbose_name="Мероприятие", null=True, blank=True)
     work_type = models.ForeignKey(WorkType, on_delete=models.CASCADE, verbose_name="Вид работы")
-    room = models.ForeignKey(Rooms, on_delete=models.CASCADE, verbose_name="Помещение")
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, verbose_name="Помещение")
     date_end = models.DateField(verbose_name="Конечная дата выполнения заявки", default=datetime.date.today)
     time_end = models.TimeField(verbose_name="Конечное время выполнения заявки", default=django.utils.timezone.now)
     description = models.TextField(verbose_name="Описание", null=True, blank=True)
@@ -83,12 +83,13 @@ class Work(models.Model):
         verbose_name = 'Заявка'
         verbose_name_plural = 'Заявки'
 
+
 class Booking(models.Model):
     date_create = models.DateField(verbose_name="Дата создания")
     event = models.ForeignKey(Event, verbose_name="Мероприятие", on_delete=models.CASCADE)
     date_start = models.DateTimeField(verbose_name="Дата начала бронирования")
     date_end = models.DateTimeField(verbose_name="Дата окончания бронирования")
-    room = models.ForeignKey(Rooms, verbose_name="Помещение", on_delete=models.CASCADE)
+    room = models.ForeignKey(Room, verbose_name="Помещение", on_delete=models.CASCADE)
     comment = models.TextField(verbose_name="Комментарий")
     cnt_section = models.PositiveIntegerField(verbose_name="Количество забронированных частей", default=1)
     
