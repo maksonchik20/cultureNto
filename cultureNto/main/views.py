@@ -172,7 +172,7 @@ def page_brone(request):
 
 
 @csrf_exempt
-def get_booking(request):
+def get_booking_intersection(request):
     if request.method == 'POST':
         json_data = json.loads(request.body)
         start_date = datetime.datetime.strptime(json_data["start_date"], "%Y-%m-%d").date()
@@ -189,11 +189,42 @@ def get_booking(request):
         return JsonResponse([
             {
                 "description": b.event.description,
-                "date_start": b.date_start,
-                "date_end": b.date_end
+                "date_start": b.date_start.strftime("%d.%m.%Y %H:%M"),
+                "date_end": b.date_end.strftime("%d.%m.%Y %H:%M")
             }
             for b in intersection
         ], safe=False)
+    return HttpResponse("invalid request")
+
+
+@csrf_exempt
+def get_available_rooms(request):
+    if request.method == 'POST':
+        json_data = json.loads(request.body)
+
+        start_date = datetime.datetime.strptime(json_data["start_date"], "%Y-%m-%d").date()
+        start_time = datetime.datetime.strptime(json_data["start_time"], "%H:%M").time()
+        end_date = datetime.datetime.strptime(json_data["end_date"], "%Y-%m-%d").date()
+        end_time = datetime.datetime.strptime(json_data["end_time"], "%H:%M").time()
+
+        start_datetime = datetime.datetime.combine(start_date, start_time)
+        end_datetime = datetime.datetime.combine(end_date, end_time)
+
+        bookings = Booking.objects.exclude(Q(date_end__lt=start_datetime) | Q(date_start__gt=end_datetime))
+        unavailable_event_locations = []
+        for booking in bookings:
+            unavailable_event_locations.extend([l.id for l in booking.locations.all()])
+
+        event_locations = EventLocation.objects.exclude(id__in=unavailable_event_locations)
+        rooms = {}
+        for event_location in event_locations:
+            obj = rooms.get(event_location.room.first().id, {"name": event_location.room.first().name, "locations": []})
+            obj["locations"].append({"id": event_location.id, "name": event_location.name})
+            rooms[event_location.room.first().id] = obj
+
+        print(rooms)
+
+        return JsonResponse(rooms, safe=False)
     return HttpResponse("invalid request")
 
 
@@ -207,6 +238,7 @@ def add_booking(request):
         end_time = datetime.datetime.strptime(json_data["end_time"], "%H:%M").time()
         event_pk = int(json_data["event_pk"])
         locations_pk = list(map(int, json_data["locations_pk"]))
+        comment = json_data["comment"]
 
         start_datetime = datetime.datetime.combine(start_date, start_time)
         end_datetime = datetime.datetime.combine(end_date, end_time)
@@ -216,7 +248,7 @@ def add_booking(request):
             event=Event.objects.get(id=event_pk),
             date_start=start_datetime,
             date_end=end_datetime,
-            comment=""
+            comment=comment
         )
         booking.save()
         booking.locations.set(EventLocation.objects.filter(id__in=locations_pk))

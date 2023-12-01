@@ -1,132 +1,254 @@
 {% extends 'main/admin_page.html' %}
 {% load static %}
 {% block content %}
-    <h1>Помещение: {{ room.name }}</h1>
-
-    <form>
-        <label>Забронировать с:</label><br/>
-        <input
-          type="date"
-          id="start-date"
-          name="start-date" required />
-
-        <input
-          type="time"
-          id="start-time"
-          name="start-time" required />
-
-        <br/><label>По:</label><br/>
-        <input
-          type="date"
-          id="end-date"
-          name="end-date" required />
-
-        <input
-          type="time"
-          id="end-time"
-          name="end-time" required />
-
-        <br/>
-        <div id="select-locations-container">
-            <label>Следующие части помещения:</label><br/>
+<h1>Помещение: {{ room.name }}</h1>
+<form id="form-booking">
+    <label>Забронировать с:</label><br/>
+    <input
+        type="date"
+        id="start-date"
+        name="start-date" required />
+    <input
+        type="time"
+        id="start-time"
+        name="start-time" required />
+    <br/><label>По:</label><br/>
+    <input
+        type="date"
+        id="end-date"
+        name="end-date" required />
+    <input
+        type="time"
+        id="end-time"
+        name="end-time" required />
+    <br/>
+    <div id="select-locations-container">
+        <label>Следующие части помещения:</label><br/>
+        <div id="select-locations-container-bar">
             <select id="select-locations" multiple required>
-               {% for location in room.locations.all %}
-                   <option value="{{ location.id }}">{{ location.name|truncatechars:65 }}</option>
-               {% endfor %}
             </select>
+            <button type="button" id="button-select-all-locations" class="btn_brone">
+            <i id="button-select-all-locations-icon" class="fa fa-check"></i> Помещение будет забронировано целиком
+            </button>
         </div>
-        <div id="select-event-container">
-            <label>Для мероприятия:</label><br/>
-            <select id="select-event" required>
-                <option value="-1">Выберите мероприятие...</option>
-               {% for event in events %}
-                   <option value="{{ event.id }}">{{ event.description|truncatechars:65 }}</option>
-               {% endfor %}
-            </select>
-        </div>
-        <button type="submit" id="button-confirm" class="btn_brone">Забронировать данное помещение</button>
-    </form>
-    <style>
-        #select-locations-container, #select-event-container {
-            margin-top: 1.4rem;
-            margin-bottom: 1.4rem;
+    </div>
+    <div id="select-event-container">
+        <label>Для мероприятия:</label><br/>
+        <select id="select-event" required>
+            <option value="-1">Выберите мероприятие...</option>
+            {% for event in events %}
+                <option value="{{ event.id }}">{{ event.description|truncatechars:65 }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div id="comment-container">
+        <label for="comment">Комментарий:</label><br/>
+        <textarea id="comment" name="comment" rows="5" cols="33"></textarea><br/>
+    </div>
+    <button type="submit" id="button-confirm" class="btn_brone">Забронировать данное помещение</button>
+</form>
+<style>
+    #select-locations-container, #select-event-container, #comment-container {
+        margin-top: 1.4rem;
+        margin-bottom: 1.4rem;
+    }
+    #select-locations-container-bar {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+    }
+    #select-locations-container-bar #button-select-all-locations {
+        width: 30rem;
+        min-height: 33px;
+        margin-left: 1.4rem;
+    }
+    #select-locations-container-bar .selectize-control {
+        width: 100%;
+    }
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script>
+    let selected_locations = [{{ room.locations.all.0.id }}];
+    let selected_event = null;
+    let start_date = "";
+    let start_time = "";
+    let end_date = "";
+    let end_time = "";
+
+    function setButtonSelectAllEventsActive() {
+        document.getElementById("button-select-all-locations").innerHTML =
+        "<i id=\"button-select-all-locations-icon\" class=\"fa fa-pencil-square-o\"></i> Забронировать помещение целиком";
+    }
+
+    function setButtonSelectAllEventsInactive() {
+        document.getElementById("button-select-all-locations").innerHTML =
+        "<i id=\"button-select-all-locations-icon\" class=\"fa fa-check\"></i> Помещение будет забронировано целиком";
+    }
+
+    function updateAvailableLocations() {
+        if (start_date == "" || start_time == "" || end_date == "" || end_time == "") {
+            return;
         }
-    </style>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" crossorigin="anonymous" />
-    <script>
-        let selected_locations = [{{ room.locations.all.0.id }}];
-        let selected_event = null;
+        fetch("../get_available_rooms", {
+          method: "post",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            "start_date": start_date,
+            "start_time": start_time,
+            "end_date": end_date,
+            "end_time": end_time,
+          })
+        })
+        .then(response => response.json())
+        .then((response) => {
+            let options = "";
 
-        $(document).ready(function () {
             let $select = $('#select-locations').selectize();
-            $select[0].selectize.setValue({{ room.locations.all.0.id }});
+            $select[0].selectize.clear();
+            $select[0].selectize.clearOptions();
 
-            $select[0].selectize.on('change', function() {
-              selected_locations = $select[0].selectize.getValue();
-            });
-          });
-          $(document).ready(function () {
-                      var $select = $('#select-event').selectize();
-
-            $select[0].selectize.on('change', function() {
-              selected_event = $select[0].selectize.getValue();
-            });
-            });
-
-        document.getElementById("button-confirm").addEventListener("click", (event) => {
-            event.preventDefault();
-            let start_date = document.getElementById("start-date").value;
-            let start_time = document.getElementById("start-time").value;
-            let end_date = document.getElementById("end-date").value;
-            let end_time = document.getElementById("end-time").value;
-
-            if (selected_event == "-1") {
-                return;
+            if (response[{{room.id}}] == undefined) {
+                $select[0].selectize.addOption({
+                    value: "-1",
+                    text: "На данный промежуток времени нет свободных частей помещения"
+                });
+                $select[0].selectize.setValue("-1");
+                document.getElementById("button-select-all-locations").disabled = true;
+                document.getElementById("button-confirm").disabled = true;
+            } else {
+                response[{{room.id}}].locations.forEach(l => {
+                    console.log(l.id);
+                    $select[0].selectize.addOption({
+                        value: l.id,
+                        text: l.name.substring(0, 65)
+                    });
+                });
+                document.getElementById("button-select-all-locations").disabled = false;
+                document.getElementById("button-confirm").disabled = false;
             }
 
-            fetch("../get_booking", {
-              method: "post",
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                "start_date": start_date,
-                "start_time": start_time,
-                "end_date": end_date,
-                "end_time": end_time,
-                "locations_pk": selected_locations,
-              })
-            })
-            .then(response => response.json())
-            .then((response) => {
-               if (response.length == 0) {
-                   fetch("../add_booking", {
-                      method: "post",
-                      headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                      },
-                      body: JSON.stringify({
-                        "start_date": start_date,
-                        "start_time": start_time,
-                        "end_date": end_date,
-                        "end_time": end_time,
-                        "locations_pk": selected_locations,
-                        "event_pk": selected_event
-                      })
-                    });
-                    alert("Успешно забронировано");
-               } else {
-                    let message = "Данная бронь пересекается со следующими мероприятиями:\n";
-                    response.forEach(r => {
-                        message += r.description.substring(0, 50) + "\n";
-                    });
-                    alert(message);
-               }
-            });
+            $select[0].selectize.refreshOptions();
         });
-    </script>
+    }
+
+    $(document).ready(function () {
+        if ({{ room.locations.all|length }} > 1) {
+            setButtonSelectAllEventsActive();
+        }
+
+        let $select = $('#select-locations').selectize();
+        $select[0].selectize.setValue({{ room.locations.all.0.id }});
+
+        $select[0].selectize.on('change', function() {
+          selected_locations = $select[0].selectize.getValue();
+              if ({{ room.locations.all|length }} == selected_locations.length) {
+                setButtonSelectAllEventsInactive();
+            } else {
+                setButtonSelectAllEventsActive();
+            }
+        });
+
+        document.getElementById("button-select-all-locations").addEventListener("click", (event) => {
+            selected_locations = [
+                {% for location in room.locations.all %}
+                    {{ location.id }},
+                {% endfor %}
+            ];
+            $select[0].selectize.setValue(selected_locations);
+            setButtonSelectAllEventsInactive();
+        });
+      });
+      $(document).ready(function () {
+                  var $select = $('#select-event').selectize();
+
+        $select[0].selectize.on('change', function() {
+          selected_event = $select[0].selectize.getValue();
+        });
+        });
+
+    document.getElementById("start-date").onchange = (event) => {
+        start_date = document.getElementById("start-date").value;
+        updateAvailableLocations();
+    };
+
+    document.getElementById("start-time").onchange = (event) => {
+        start_time = document.getElementById("start-time").value;
+        updateAvailableLocations();
+    };
+
+    document.getElementById("end-date").onchange = (event) => {
+        end_date = document.getElementById("end-date").value;
+        updateAvailableLocations();
+    };
+
+    document.getElementById("end-time").onchange = (event) => {
+        end_time = document.getElementById("end-time").value;
+        updateAvailableLocations();
+    };
+
+    document.getElementById("form-booking").onsubmit = (event) => {
+        event.preventDefault();
+
+        let comment = document.getElementById("comment").value;
+
+        console.log(selected_event);
+
+        if (selected_event == "-1" || selected_event == null || selected_locations.length == 0) {
+            alert("Не все поля заполнены");
+            return false;
+        }
+
+        fetch("../get_booking_intersection", {
+          method: "post",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            "start_date": start_date,
+            "start_time": start_time,
+            "end_date": end_date,
+            "end_time": end_time,
+            "locations_pk": selected_locations,
+          })
+        })
+        .then(response => response.json())
+        .then((response) => {
+           if (response.length == 0) {
+               fetch("../add_booking", {
+                  method: "post",
+                  headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    "start_date": start_date,
+                    "start_time": start_time,
+                    "end_date": end_date,
+                    "end_time": end_time,
+                    "locations_pk": selected_locations,
+                    "event_pk": selected_event,
+                    "comment": comment
+                  })
+                });
+                alert("Успешно забронировано");
+                updateAvailableLocations();
+           } else {
+                let message = "Данная бронь пересекается со следующими мероприятиями:\n";
+                response.forEach(r => {
+                    message += r.description.substring(0, 50) + ` (с ${r.date_start} по ${r.date_end})` + "\n";
+                });
+                alert(message);
+           }
+        });
+
+        return false;
+    };
+</script>
 {% endblock %}
