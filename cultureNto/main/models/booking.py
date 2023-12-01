@@ -1,5 +1,7 @@
 from django.db import models
 from django.core.validators import ValidationError
+from django.db.models import Q
+
 from .event import Event
 from .room import Room
 from .event_location import EventLocation
@@ -15,18 +17,22 @@ class Booking(models.Model):
     comment = models.TextField(verbose_name="Комментарий")
 
     def __str__(self):
-        return f"Помещение {self.room.name} забранировано с {self.date_start.date()} {self.date_start.time()} до {self.date_end.date()} {self.date_end.time()}. Создано {self.date_create}."
+        locations = EventLocation.objects.filter(id__in=self.locations.all())
+        locations = ' '.join(location.name[:50] for location in locations)
+        return f"Помещения {locations} забранированы с {self.date_start.date()} {self.date_start.time()} до {self.date_end.date()} {self.date_end.time()}. Создано {self.date_create}."
 
     def clean(self):
-        cnt_free_room = Ready().get_free_room_between_date(self.date_start, self.date_end)
-        #if (self.cnt_section <= 0):
-        #    raise ValidationError("Убедитесь, что количетсво забронированных частей > 0")
-        #if (cnt_free_room.get(self.room.pk) is None):
-        #    raise ValidationError("Помещение не было найдено")
-        #if (self.cnt_section > self.room.cnts):
-        #    raise ValidationError(
-        #        f"Помещение {self.room.name} нельзя забронировать на {self.cnt_section} части(ей). К бронированию доступно: {cnt_free_room[self.room.pk][1]} частей")
+        intersection = Booking.get_booking_intersection(self.locations.all(), self.date_start, self.date_end)
+        if len(intersection) != 0:
+            raise ValidationError("Данная бронь пересекается с другими мероприятиями.")
 
     class Meta:
         verbose_name = "Бронирование"
         verbose_name_plural = "Бронирования"
+
+    @classmethod
+    def get_booking_intersection(cls, locations_pk, start_datetime, end_datetime):
+        bookings = cls.objects.filter(
+            locations__id__in=locations_pk,
+        ).exclude(Q(date_end__lt=start_datetime) | Q(date_start__gt=end_datetime))
+        return bookings

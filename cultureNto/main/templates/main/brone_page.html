@@ -1,5 +1,132 @@
 {% extends 'main/admin_page.html' %}
 {% load static %}
 {% block content %}
-   <h1>Помещение: {{ room.name }}</h1>
+    <h1>Помещение: {{ room.name }}</h1>
+
+    <form>
+        <label>Забронировать с:</label><br/>
+        <input
+          type="date"
+          id="start-date"
+          name="start-date" required />
+
+        <input
+          type="time"
+          id="start-time"
+          name="start-time" required />
+
+        <br/><label>По:</label><br/>
+        <input
+          type="date"
+          id="end-date"
+          name="end-date" required />
+
+        <input
+          type="time"
+          id="end-time"
+          name="end-time" required />
+
+        <br/>
+        <div id="select-locations-container">
+            <label>Следующие части помещения:</label><br/>
+            <select id="select-locations" multiple required>
+               {% for location in room.locations.all %}
+                   <option value="{{ location.id }}">{{ location.name|truncatechars:65 }}</option>
+               {% endfor %}
+            </select>
+        </div>
+        <div id="select-event-container">
+            <label>Для мероприятия:</label><br/>
+            <select id="select-event" required>
+                <option value="-1">Выберите мероприятие...</option>
+               {% for event in events %}
+                   <option value="{{ event.id }}">{{ event.description|truncatechars:65 }}</option>
+               {% endfor %}
+            </select>
+        </div>
+        <button type="submit" id="button-confirm" class="btn_brone">Забронировать данное помещение</button>
+    </form>
+    <style>
+        #select-locations-container, #select-event-container {
+            margin-top: 1.4rem;
+            margin-bottom: 1.4rem;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" crossorigin="anonymous" />
+    <script>
+        let selected_locations = [{{ room.locations.all.0.id }}];
+        let selected_event = null;
+
+        $(document).ready(function () {
+            let $select = $('#select-locations').selectize();
+            $select[0].selectize.setValue({{ room.locations.all.0.id }});
+
+            $select[0].selectize.on('change', function() {
+              selected_locations = $select[0].selectize.getValue();
+            });
+          });
+          $(document).ready(function () {
+                      var $select = $('#select-event').selectize();
+
+            $select[0].selectize.on('change', function() {
+              selected_event = $select[0].selectize.getValue();
+            });
+            });
+
+        document.getElementById("button-confirm").addEventListener("click", (event) => {
+            event.preventDefault();
+            let start_date = document.getElementById("start-date").value;
+            let start_time = document.getElementById("start-time").value;
+            let end_date = document.getElementById("end-date").value;
+            let end_time = document.getElementById("end-time").value;
+
+            if (selected_event == "-1") {
+                return;
+            }
+
+            fetch("../get_booking", {
+              method: "post",
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                "start_date": start_date,
+                "start_time": start_time,
+                "end_date": end_date,
+                "end_time": end_time,
+                "locations_pk": selected_locations,
+              })
+            })
+            .then(response => response.json())
+            .then((response) => {
+               if (response.length == 0) {
+                   fetch("../add_booking", {
+                      method: "post",
+                      headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                      },
+                      body: JSON.stringify({
+                        "start_date": start_date,
+                        "start_time": start_time,
+                        "end_date": end_date,
+                        "end_time": end_time,
+                        "locations_pk": selected_locations,
+                        "event_pk": selected_event
+                      })
+                    });
+                    alert("Успешно забронировано");
+               } else {
+                    let message = "Данная бронь пересекается со следующими мероприятиями:\n";
+                    response.forEach(r => {
+                        message += r.description.substring(0, 50) + "\n";
+                    });
+                    alert(message);
+               }
+            });
+        });
+    </script>
 {% endblock %}

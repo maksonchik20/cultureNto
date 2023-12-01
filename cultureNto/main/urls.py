@@ -17,7 +17,9 @@ urlpatterns = [
     path("events/", events),
 
     path("admin/brone", page_brone),
-    path("add_brone/<int:pk>", add_brone)
+    path("add_brone/<int:pk>", add_brone),
+    path("get_booking", get_booking),
+    path("add_booking", add_booking),
     
     # path("tabletest/", tableRender)
 ]

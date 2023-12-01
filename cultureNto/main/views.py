@@ -1,8 +1,14 @@
+import datetime
+
+from django.db.models import Q
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from django_tables2 import RequestConfig
-from .models import Event, Work, WorkType, Room, Booking
+from .models import Event, Work, WorkType, Room, Booking, EventLocation
 from .tables import EventTable, RoomTable
 from django_tables2.export.export import TableExport
+import json
+from django.views.decorators.csrf import csrf_exempt
 
 
 def base(request):
@@ -165,12 +171,68 @@ def page_brone(request):
     return render(request, "main/admin_page.html", data)
 
 
+@csrf_exempt
+def get_booking(request):
+    if request.method == 'POST':
+        json_data = json.loads(request.body)
+        start_date = datetime.datetime.strptime(json_data["start_date"], "%Y-%m-%d").date()
+        start_time = datetime.datetime.strptime(json_data["start_time"], "%H:%M").time()
+        end_date = datetime.datetime.strptime(json_data["end_date"], "%Y-%m-%d").date()
+        end_time = datetime.datetime.strptime(json_data["end_time"], "%H:%M").time()
+        locations_pk = list(map(int, json_data["locations_pk"]))
+
+        start_datetime = datetime.datetime.combine(start_date, start_time)
+        end_datetime = datetime.datetime.combine(end_date, end_time)
+
+        intersection = Booking.get_booking_intersection(locations_pk, start_datetime, end_datetime)
+
+        return JsonResponse([
+            {
+                "description": b.event.description,
+                "date_start": b.date_start,
+                "date_end": b.date_end
+            }
+            for b in intersection
+        ], safe=False)
+    return HttpResponse("invalid request")
+
+
+@csrf_exempt
+def add_booking(request):
+    if request.method == 'POST':
+        json_data = json.loads(request.body)
+        start_date = datetime.datetime.strptime(json_data["start_date"], "%Y-%m-%d").date()
+        start_time = datetime.datetime.strptime(json_data["start_time"], "%H:%M").time()
+        end_date = datetime.datetime.strptime(json_data["end_date"], "%Y-%m-%d").date()
+        end_time = datetime.datetime.strptime(json_data["end_time"], "%H:%M").time()
+        event_pk = int(json_data["event_pk"])
+        locations_pk = list(map(int, json_data["locations_pk"]))
+
+        start_datetime = datetime.datetime.combine(start_date, start_time)
+        end_datetime = datetime.datetime.combine(end_date, end_time)
+
+        booking = Booking(
+            date_create=datetime.datetime.now(),
+            event=Event.objects.get(id=event_pk),
+            date_start=start_datetime,
+            date_end=end_datetime,
+            comment=""
+        )
+        booking.save()
+        booking.locations.set(EventLocation.objects.filter(id__in=locations_pk))
+        booking.save()
+
+    return HttpResponse("invalid request")
+
+
 def add_brone(request, pk):
     room = Room.objects.filter(id=pk).first()
     booking = Booking.objects.filter(locations__id__in=room.locations.all())
+    events = Event.objects.all()
     data = {
         "title": "Страница бронирования",
         "booking": booking,
-        "room": room
+        "room": room,
+        "events": events
     }
     return render(request, "main/brone_page.html", data)

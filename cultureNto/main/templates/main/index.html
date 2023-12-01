@@ -1,5 +1,11 @@
 {% extends 'main/base.html' %}
 {% load static %}
 {% block content %}
-<div class="index_div"></div>
+<div class="index_div">
+    <h1>Наш культурный центр представляет для вас мероприятия.</h1>
+        <h2>Для просмотра списка мероприятий выберите категорию выше.</h2>
+        <div class="index_img">
+            <img src="{% static 'main/media/culture.png' %}" alt="">
+        </div>
+    </div>
 {% endblock %}

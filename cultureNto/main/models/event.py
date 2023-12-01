@@ -10,7 +10,7 @@ class Event(models.Model):
     description = models.TextField(verbose_name="Описание")
 
     def __str__(self):
-        return f"Дата: {self.date.day}.{self.date.month}.{self.date.year} Время: {self.time.hour}:{self.time.minute}. Вид мероприятия: {self.type_event}"
+        return f"Дата: {self.date.day}.{self.date.month}.{self.date.year} Время: {self.time.hour}:{self.time.minute}.\n{self.description[:50]}"
 
     class Meta:
         verbose_name = 'Мероприятие'

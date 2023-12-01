@@ -87,7 +87,7 @@ def populate_room(apps, schema_editor):
     def room(room_id: int, room_name: str, query):
         room_ = Room(id=room_id, name=room_name)
         room_.save()
-        room_.locations.add(EventLocation.objects.filter(query).first())
+        room_.locations.set(EventLocation.objects.filter(query))
         return room_
 
     room(1, "Арт-галерея", Q(name="Арт-галерея (1-й сектор)") | Q(name="Арт-галерея (2-й сектор)"))
