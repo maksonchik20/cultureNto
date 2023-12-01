@@ -52,12 +52,10 @@ class WorkAdmin(admin.ModelAdmin):
 
     def color_status(self, obj):
         color = "transparent"
-        if (obj.status == "Выполнена"):
-            color = "#95b576"
-        elif (obj.status == "К выполнению"):
-            color = "#c1876b"
-        else:
-            color = "#a3a3a3"
+        if obj.status == "Выполнена":
+            color = "rgb(201, 199, 199)"
+        elif obj.status == "К выполнению":
+            color = "pink"
         return format_html(f'<p style="background-color: {color};">{obj.status}</p>')
     color_status.short_description = "Статус заявки"
     small_description.short_description = "Описание"
