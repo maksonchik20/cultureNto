@@ -11,9 +11,8 @@ venv
 cultureNto/static/admin
 cultureNto/static/django_tables2
 cultureNto/static/django_extensions
-
 __pycache__
 README.txt
-migrations
 cultureNto.zip
 culture.exe
+cultureNto/db.sqlite3
