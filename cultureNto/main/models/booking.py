@@ -16,12 +16,7 @@ class Booking(models.Model):
     def __str__(self):
         locations = EventLocation.objects.filter(id__in=self.locations.all())
         locations = ' '.join(location.name[:50] for location in locations)
-        return f"Помещения {locations} забранированы с {self.date_start.date()} {self.date_start.time()} до {self.date_end.date()} {self.date_end.time()}. Создано {self.date_create}."
-
-    def clean(self):
-        intersection = Booking.get_booking_intersection(self.locations.all(), self.date_start, self.date_end)
-        if len(intersection) != 0:
-            raise ValidationError("Данная бронь пересекается с другими мероприятиями.")
+        return f"Помещения {locations} забронированы с {self.date_start.date()} {self.date_start.time()} до {self.date_end.date()} {self.date_end.time()}. Создано {self.date_create}."
 
     class Meta:
         verbose_name = "Бронирование"

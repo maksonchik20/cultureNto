@@ -1,6 +1,8 @@
 from django.contrib import admin
 from .models import EventType, Event, Work, WorkType, Room, Booking, EventLocation
 from django.utils.html import format_html
+from .forms import BookingForm
+
 
 admin.site.register(EventType)
 
@@ -69,4 +71,4 @@ class WorkAdmin(admin.ModelAdmin):
 
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):
-    pass
+    form = BookingForm
