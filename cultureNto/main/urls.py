@@ -7,10 +7,9 @@ from .views import *
 urlpatterns = [
     path('base/', base),
     path('', index),
-    path("razvlech/", tableRender, name="razvlech"),
-    path("prosvesh/", tableRender),
-    path("education/", tableRender),
-    path("createData/", createData),
+    path("entertainment/", tableRender, name="entertainment"),
+    path("enlightenment/", tableRender, name="enlightenment"),
+    path("education/", tableRender, name="education"),
     path("worktable/", worktable),
     path("start_workers_page/", start_workers_page),
     path("rooms/", roomsRender),
