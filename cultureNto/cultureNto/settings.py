@@ -16,6 +16,8 @@ ALLOWED_HOSTS = ['culture.pythonanywhere.com', "localhost"]
 # Application definition
 
 INSTALLED_APPS = [
+    'admin_reorder',
+    'import_export',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -26,7 +28,7 @@ INSTALLED_APPS = [
     'main',
 
     'django_tables2',
-    'django_extensions',
+    'django_extensions'
 ]
 
 MIDDLEWARE = [
@@ -37,6 +39,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'admin_reorder.middleware.ModelAdminReorder',
 ]
 
 ROOT_URLCONF = 'cultureNto.urls'
@@ -45,7 +48,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, "main/templates/")],
-        'APP_DIRS': True,
+        'APP_DIRS': False,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -53,6 +56,11 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            "loaders": [
+                "admin_tools.template_loaders.Loader",
+                "django.template.loaders.filesystem.Loader",
+                "django.template.loaders.app_directories.Loader"
+            ]
         },
     },
 ]
@@ -146,7 +154,9 @@ STATIC_URL = '/static/'
 #     BASE_DIR / 'static'
 # ]
 
-
-
 CKEDITOR_UPLOAD_PATH = "uploads/"
 CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"
+
+ADMIN_REORDER = (
+    "main",
+)

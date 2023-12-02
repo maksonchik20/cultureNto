@@ -1,48 +1,47 @@
-{% extends 'main/base.html' %}
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_modify %}
+{% load render_table from django_tables2 %}
+{% load export_url from django_tables2 %}
 {% load static %}
-
-{% block head %}
-<link rel="stylesheet" href="{% static 'main/tableWork.css' %}" />
-{% endblock head %}
     
 {% block content %}
-<form action="" method="get">
-    <label for="workType">Выберите вид работ:</label>
-    <select id="workType" class="selectWorkType" name="select">
-        <option value="all" name="all">Все виды работ</option>
+<form action="" method="get" class="worktable">
+    <label for="workType" class="worktable">Выберите вид работ:</label>
+    <select id="workType" class="selectWorkType worktable" name="select">
+        <option value="all" name="all" class="worktable">Все виды работ</option>
         
         {% for el in workTypes %}
-        <option value="{{el.name}}" name="{{el.name}}">{{el.name}}</option>
+        <option value="{{el.name}}" name="{{el.name}}" class="worktable">{{el.name}}</option>
         {% endfor %}
     </select>
-    <button type="submit" class="workTypeBtnSubmit">Изменить таблицу</button>
+    <button type="submit" class="workTypeBtnSubmit worktable">Фильтровать</button>
 </form>
 
-<section class="desktop">
-    <table>
-        <thead>
-            <tr>
-                <th>Дата Регистрации</th>
-                <th>Вид работ</th>
-                <th>Срок выполнения</th>
-                <th>Мероприятие</th>
-                <th>Помещение</th>
-                <th>Описание</th>
-                <th>Выполнено</th>
+<section class="desktop worktable">
+    <table class="worktable">
+        <thead class="worktable">
+            <tr class="worktable">
+                <th class="worktable">Дата Регистрации</th>
+                <th class="worktable">Вид работ</th>
+                <th class="worktable">Срок выполнения</th>
+                <th class="worktable">Мероприятие</th>
+                <th class="worktable">Помещение</th>
+                <th class="worktable">Описание</th>
+                <th class="worktable">Выполнено</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="worktable">
             {% for el in objects %}
-                <tr>
-                    <td>{{el.date}} {{el.time}}</td>
-                    <td>{{el.work_type}}</td>
-                    <td>{{el.date_end}} {{el.time_end}}</td>
-                    <td>{{el.event}}</td>
-                    <td>{{el.room}}</td>
-                    <td>{{el.description}}</td>
-                    <td>
-                        <form action="" method="get">
-                            <button name="del" type="submit" class="workTypeBtnSubmit" value="{{el.pk}}">Изменить на Выполнено</button>
+                <tr class="worktable">
+                    <td class="worktable">{{el.date}} {{el.time}}</td>
+                    <td class="worktable">{{el.work_type}}</td>
+                    <td class="worktable">{{el.date_end}} {{el.time_end}}</td>
+                    <td class="worktable">{{el.event}}</td>
+                    <td class="worktable">{{el.room}}</td>
+                    <td class="worktable">{{el.description}}</td>
+                    <td class="worktable">
+                        <form action="" method="get" class="worktable">
+                            <button name="del" type="submit" class="workTypeBtnSubmit worktable" value="{{el.pk}}">Изменить на Выполнено</button>
                         </form>
                     </td>
                 </tr>

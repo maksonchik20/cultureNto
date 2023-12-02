@@ -1,5 +1,54 @@
 {% load i18n %}
 
+<div id="extra_links_wrapper" class="module">
+    <table>
+        <caption>
+            <a class="section" title="Мероприятия" style="color: var(--header-link-color);">Категории</a>
+        </caption>
+        <tr>
+            <th scope="row">
+                <a href="/entertainment">
+                    Развлечения
+                </a>
+            </th>
+            <td></td>
+        </tr>
+        <tr>
+            <th scope="row">
+                <a href="/enlightenment">
+                    Просвещение
+                </a>
+            </th>
+            <td></td>
+        </tr>
+        <tr>
+            <th scope="row">
+                <a href="/education">
+                    Образование
+                </a>
+            </th>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+<div class="module">
+    <table>
+        <caption>
+            <a class="section" title="Сотрудникам" style="color: var(--header-link-color);">Сотрудникам</a>
+        </caption>
+        <tr>
+            <th scope="row">
+                <a href="/worktable">
+                    Работа с заявками
+                </a>
+            </th>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+
 {% if app_list %}
   {% for app in app_list %}
     <div class="app-{{ app.app_label }} module{% if app.app_url in request.path|urlencode %} current-app{% endif %}">
@@ -17,7 +66,7 @@
             {% if model.add_url %}
               <td><a href="{{ model.add_url }}" class="addlink">{% translate 'Add' %}</a></td>
             {% elif model.object_name == "Booking" %}
-              <td><a href="/admin/brone" class="addlink">{% translate 'Add' %}</a></td>
+              <td><a href="/admin/booking" class="addlink">{% translate 'Add' %}</a></td>
             {% else %}
               <td></td>
             {% endif %}

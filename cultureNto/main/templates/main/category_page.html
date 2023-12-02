@@ -1,39 +1,37 @@
-{% extends 'main/base.html' %}
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_modify %}
 {% load render_table from django_tables2 %}
 {% load export_url from django_tables2 %}
+{% load static %}
 
 {% block content %}
-    <div class="maincontainer">
-    <p style="text-align:center;">
-        <a class="btnAddNewEvent" style="text-decoration: none;" href="/rooms">
-            Помещения
-        </a>
-    </p>
-    {% if table %} 
-        <p style="text-align:center;">
-            <a class="btnAddNewEvent" style="text-decoration: none;" href="/admin/main/event/add/?category={{ cat }}">
-            Добавить новое мероприятие
+    <div style="display: flex;flex-direction: column;">
+        <div style="display:flex;">
+            <p style="text-align:center;">
+                <a class="btnAddNewEvent" style="text-decoration: none;" href="/admin/main/event/add/?category={{ cat }}">
+                    Добавить новое мероприятие
+                </a>
+            </p>
+            <p style="text-align:center;margin-left: 1rem;">
+                <a class="btnAddNewEvent" style="text-decoration: none;" href="/rooms">
+                    Помещения
+                </a>
+            </p>
+        </div>
+        <div>
+            {% render_table table %}
+        </div><br/>
+        <div style="display:flex;flex-direction:column;">
+            <h3>Экспортирование данных о мероприятиях:</h3>
+            <a href="{% export_url 'xls' %}">
+                Скачать  <code>.{{ 'xls' }}</code>
             </a>
-        </p>
-        {% render_table table %}
-        <h3>Экспортирование данных о мероприятиях:</h3>
-        <a href="{% export_url 'xls' %}">
-            Скачать  <code>.{{ 'xls' }}</code>
-        </a><br>
-        <a href="{% export_url 'xlsx' %}">
-            Скачать  <code>.{{ 'xlsx' }}</code>
-        </a><br>
-        <a href="{% export_url 'json' %}">
-            Скачать  <code>.{{ 'json' }}</code>
-        </a>
-    {% endif %}
-    {% if cat == "Образование" %}
-    {% comment %} {% render_table rooms %} {% endcomment %}
-    {% endif %}
+            <a href="{% export_url 'xlsx' %}">
+                Скачать  <code>.{{ 'xlsx' }}</code>
+            </a>
+            <a href="{% export_url 'json' %}">
+                Скачать  <code>.{{ 'json' }}</code>
+            </a>
+        </div>
     </div>
-    <style>
-        div .maincontainer {
-            margin: 2rem;
-        }
-    </style>
 {% endblock %}

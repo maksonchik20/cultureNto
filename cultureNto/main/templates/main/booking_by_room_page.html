@@ -1,4 +1,4 @@
-{% extends 'main/admin_page.html' %}
+{% extends 'admin/base.html' %}
 {% load static %}
 {% block content %}
 <h1>Помещение: {{ room.name }}</h1>
@@ -68,8 +68,6 @@
 </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script>
     let selected_locations = [{{ room.locations.all.0.id }}];
     let selected_event = null;

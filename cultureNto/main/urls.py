@@ -1,21 +1,22 @@
+from django.urls import path, include, re_path
 from django.contrib import admin
-from django.urls import path, include
-from django.conf import settings
-from django.conf.urls.static import static
 from .views import *
 
-urlpatterns = [
-    path('base/', base),
-    path('', index),
-    path("entertainment/", tableRender, name="entertainment"),
-    path("enlightenment/", tableRender, name="enlightenment"),
-    path("education/", tableRender, name="education"),
-    path("worktable/", worktable),
-    path("start_workers_page/", start_workers_page),
-    path("rooms/", roomsRender),
-    path("events/", events),
 
-    path("admin/brone", page_brone),
+admin.site.site_header = "Администрирование Культуры"
+admin.site.site_title = "Администрирование Культуры"
+admin.site.index_title = "Добро пожаловать"
+
+
+urlpatterns = [
+    re_path(r'^admin_tools/', include('admin_tools.urls')),
+    path('', index),
+    path("entertainment/", entertainment),
+    path("enlightenment/", enlightenment),
+    path("education/", education),
+    path("worktable/", worktable),
+    path("rooms/", rooms),
+
     path("add_booking_by_room/<int:pk>", add_booking_by_room),
     path("add_booking_by_event/<int:pk>", add_booking_by_event),
     path("get_booking_intersection", get_booking_intersection),

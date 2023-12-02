@@ -1,61 +1,61 @@
 
-body {
+body.worktable {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
 }
 
-header {
+header.worktable {
     background-color: rebeccapurple;
     color: #fff;
     padding: 10px;
     text-align: center;
 }
 
-.filters {
+.filters.worktable {
     padding: 20px;
     background-color: #eee;
 }
 
-.desktop {
+.desktop.worktable {
     padding: 20px;
 }
 
-table {
+table.worktable {
     width: 100%;
     border-collapse: collapse;
 }
 
-th, td {
+th.worktable, td.worktable {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
 }
 
-th {
+th.worktable {
     background-color: rebeccapurple;
     color: #fff;
 }
 
-label {
+label.worktable {
     margin-right: 10px;
 }
 
-.workTypeBtnSubmit {
+.workTypeBtnSubmit.worktable {
     border: 2px solid rebeccapurple;
     padding: 5px;
     border-radius: 6px;
     background-color: transparent;
 }
 
-.workTypeBtnSubmit:hover {
+.workTypeBtnSubmit.worktable:hover {
     background-color: rebeccapurple;
     color:white;
     border-color: rebeccapurple;
     transition: all 0.2s linear;
 }
 
-.selectWorkType {
+.selectWorkType.worktable {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -67,20 +67,20 @@ label {
     border: 1px solid #ddd;
     border-radius: 3px;
 }
-.selectWorkType:hover {
+.selectWorkType.worktable:hover {
     border: 1px solid #999;
 }
-.selectWorkType:focus {
+.selectWorkType.worktable:focus {
     border: 1px solid #999;
     box-shadow: 0 3px 5px 0 rgba(0,0,0,.2);
     outline: none;
 }
 
-select::-ms-expand {
+select.worktable::-ms-expand {
     display:none;
 }
 
-.selectWorkType {
+.selectWorkType.worktable {
     font-family: "Source Sans Pro", sans-serif;
-    font-size: 1.6rem;
+    font-size: 1rem;
 }
