@@ -9,7 +9,6 @@ admin.site.index_title = "Добро пожаловать"
 
 
 urlpatterns = [
-    re_path(r'^admin_tools/', include('admin_tools.urls')),
     path('', index),
     path("entertainment/", entertainment),
     path("enlightenment/", enlightenment),

@@ -128,11 +128,11 @@ def entertainment(request):
     available_apps = django.contrib.admin.sites.site.get_app_list(request)
 
     available_apps = [
-        app | {
+        {**app, **{
             "models": [
                 model for model in app["models"] if model["name"] in ["Мероприятия", "Виды работ", "Заявки"]
             ]
-        }
+        }}
         for app in available_apps if app["name"] == "Данные"
     ]
 
@@ -158,11 +158,11 @@ def enlightenment(request):
     available_apps = django.contrib.admin.sites.site.get_app_list(request)
 
     available_apps = [
-        app | {
+        {**app, **{
             "models": [
                 model for model in app["models"] if model["name"] in ["Мероприятия", "Виды работ", "Заявки"]
             ]
-        }
+        }}
         for app in available_apps if app["name"] == "Данные"
     ]
 
@@ -188,11 +188,11 @@ def education(request):
     available_apps = django.contrib.admin.sites.site.get_app_list(request)
 
     available_apps = [
-        app | {
+        {**app, **{
             "models": [
                 model for model in app["models"] if model["name"] in ["Мероприятия", "Виды работ", "Заявки"]
             ]
-        }
+        }}
         for app in available_apps if app["name"] == "Данные"
     ]
 
@@ -218,11 +218,11 @@ def rooms(request):
     available_apps = django.contrib.admin.sites.site.get_app_list(request)
 
     available_apps = [
-        app | {
+        {**app, **{
             "models": [
                 model for model in app["models"] if model["name"] in ["Мероприятия", "Виды работ", "Заявки"]
             ]
-        }
+        }}
         for app in available_apps if app["name"] == "Данные"
     ]
 
