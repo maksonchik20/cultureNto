@@ -31,7 +31,7 @@ def populate_booking(apps, _schema_editor):
         event_id=2,
         date_start=datetime.datetime(2023, 11, 25, 11, 50),
         date_end=datetime.datetime(2023, 11, 25, 17, 10),
-        comment="Выставка (бронь заранее для размещения)",
+        comment="Помещение забронировано полностью для одного мероприятия",
         locations_query=Q(name="Арт-галерея (1-й сектор)") | Q(name="Арт-галерея (2-й сектор)")
     )
 
@@ -41,6 +41,30 @@ def populate_booking(apps, _schema_editor):
         date_end=datetime.datetime(2023, 11, 19, 22, 30),
         comment="Спектакль",
         locations_query=Q(name="Театральная сцена")
+    )
+
+    create_booking(
+        event_id=2,
+        date_start=datetime.datetime(2023, 11, 26, 11, 50),
+        date_end=datetime.datetime(2023, 11, 26, 17, 10),
+        comment="Помещение забронировано частично",
+        locations_query=Q(name="Арт-галерея (1-й сектор)")
+    )
+
+    create_booking(
+        event_id=2,
+        date_start=datetime.datetime(2023, 11, 29, 11, 50),
+        date_end=datetime.datetime(2023, 11, 29, 14, 10),
+        comment="Помещение заброниоовано полностью, но различными частями для разных мероприятий",
+        locations_query=Q(name="Арт-галерея (1-й сектор)")
+    )
+
+    create_booking(
+        event_id=1,
+        date_start=datetime.datetime(2023, 11, 29, 11, 50),
+        date_end=datetime.datetime(2023, 11, 29, 14, 10),
+        comment="Помещение заброниоовано полностью, но различными частями для разных мероприятий",
+        locations_query=Q(name="Арт-галерея (2-й сектор)")
     )
 
 
