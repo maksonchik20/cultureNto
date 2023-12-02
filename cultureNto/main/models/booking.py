@@ -1,11 +1,8 @@
 from django.db import models
 from django.core.validators import ValidationError
 from django.db.models import Q
-
 from .event import Event
-from .room import Room
 from .event_location import EventLocation
-from .utils import Ready
 
 
 class Booking(models.Model):

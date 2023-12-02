@@ -1,7 +1,7 @@
 {% extends 'main/admin_page.html' %}
 {% load static %}
 {% block content %}
-<h1>Помещение: {{ room.name }}</h1>
+<h1>Событие: {{ event.description|truncatechars:65 }}</h1>
 <form id="form-booking">
     <label>Забронировать с:</label><br/>
     <input
@@ -22,6 +22,13 @@
         id="end-time"
         name="end-time" required />
     <br/>
+    <div id="select-room-container">
+        <label>В помещении:</label><br/>
+        <div id="select-room-container-bar">
+            <select id="select-room" required>
+            </select>
+        </div>
+    </div>
     <div id="select-locations-container">
         <label>Следующие части помещения:</label><br/>
         <div id="select-locations-container-bar">
@@ -32,15 +39,6 @@
             </button>
         </div>
     </div>
-    <div id="select-event-container">
-        <label>Для мероприятия:</label><br/>
-        <select id="select-event" required>
-            <option value="-1">Выберите мероприятие...</option>
-            {% for event in events %}
-                <option value="{{ event.id }}">{{ event.description|truncatechars:65 }}</option>
-            {% endfor %}
-        </select>
-    </div>
     <div id="comment-container">
         <label for="comment">Комментарий:</label><br/>
         <textarea id="comment" name="comment" rows="5" cols="33"></textarea><br/>
@@ -48,7 +46,7 @@
     <button type="submit" id="button-confirm" class="btn_brone">Забронировать данное помещение</button>
 </form>
 <style>
-    #select-locations-container, #select-event-container, #comment-container {
+    #select-locations-container, #select-room-container, #comment-container {
         margin-top: 1.4rem;
         margin-bottom: 1.4rem;
     }
@@ -71,22 +69,25 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" crossorigin="anonymous" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script>
-    let selected_locations = [{{ room.locations.all.0.id }}];
-    let selected_event = null;
+    let available_rooms = [];
+    let selected_room = "-1";
+    let selected_locations = [];
     let start_date = "";
     let start_time = "";
     let end_date = "";
     let end_time = "";
 
-    function setButtonSelectAllEventsActive() {
+    function setButtonSelectAllLocationsActive() {
         document.getElementById("button-select-all-locations").innerHTML =
         "<i id=\"button-select-all-locations-icon\" class=\"fa fa-pencil-square-o\"></i> Забронировать помещение целиком";
     }
 
-    function setButtonSelectAllEventsInactive() {
+    function setButtonSelectAllLocationsInactive() {
         document.getElementById("button-select-all-locations").innerHTML =
         "<i id=\"button-select-all-locations-icon\" class=\"fa fa-check\"></i> Помещение будет забронировано целиком";
     }
+
+    setButtonSelectAllLocationsActive();
 
     function updateAvailableLocations() {
         if (start_date == "" || start_time == "" || end_date == "" || end_time == "") {
@@ -107,70 +108,100 @@
         })
         .then(response => response.json())
         .then((response) => {
+            available_rooms = response;
+            selected_room = "-1";
+            selected_locations = [];
+
+            let $select_room = $('#select-room').selectize();
+            $select_room[0].selectize.clear();
+            $select_room[0].selectize.clearOptions();
+
             let options = "";
 
-            let $select = $('#select-locations').selectize();
-            $select[0].selectize.clear();
-            $select[0].selectize.clearOptions();
+            let rooms = Object.keys(response);
 
-            if (response[{{room.id}}] == undefined) {
-                $select[0].selectize.addOption({
+            if (rooms.length == 0) {
+                $select_room[0].selectize.addOption({
                     value: "-1",
-                    text: "На данный промежуток времени нет свободных частей помещения"
+                    text: "На данный промежуток времени нет свободных помещений"
                 });
-                $select[0].selectize.setValue("-1");
+                $select_room[0].selectize.setValue("-1");
                 document.getElementById("button-select-all-locations").disabled = true;
                 document.getElementById("button-confirm").disabled = true;
             } else {
-                response[{{room.id}}].locations.forEach(l => {
-                    console.log(l.id);
-                    $select[0].selectize.addOption({
-                        value: l.id,
-                        text: l.name.substring(0, 65)
+                rooms.forEach(room_pk => {
+                    $select_room[0].selectize.addOption({
+                        value: room_pk,
+                        text: response[room_pk].name
                     });
                 });
                 document.getElementById("button-select-all-locations").disabled = false;
                 document.getElementById("button-confirm").disabled = false;
             }
 
-            $select[0].selectize.refreshOptions();
+            $select_room[0].selectize.refreshOptions();
+
+
+            let $select_locations = $('#select-locations').selectize();
+            $select_locations[0].selectize.clear();
+            $select_locations[0].selectize.clearOptions();
+            $select_locations[0].selectize.refreshOptions();
         });
     }
 
     $(document).ready(function () {
-        if ({{ room.locations.all|length }} > 1) {
-            setButtonSelectAllEventsActive();
-        }
+        let $select_locations = $('#select-locations').selectize();
 
-        let $select = $('#select-locations').selectize();
-        $select[0].selectize.setValue({{ room.locations.all.0.id }});
-
-        $select[0].selectize.on('change', function() {
-          selected_locations = $select[0].selectize.getValue();
-              if ({{ room.locations.all|length }} == selected_locations.length) {
-                setButtonSelectAllEventsInactive();
+        $select_locations[0].selectize.on('change', function() {
+          if (selected_room == "-1") {
+            return;
+          }
+          console.log(selected_room);
+          console.log(available_rooms);
+          selected_locations = $select_locations[0].selectize.getValue();
+            if (available_rooms[selected_room].locations.length == selected_locations.length) {
+                setButtonSelectAllLocationsInactive();
             } else {
-                setButtonSelectAllEventsActive();
+                setButtonSelectAllLocationsActive();
             }
         });
 
         document.getElementById("button-select-all-locations").addEventListener("click", (event) => {
-            selected_locations = [
-                {% for location in room.locations.all %}
-                    {{ location.id }},
-                {% endfor %}
-            ];
-            $select[0].selectize.setValue(selected_locations);
-            setButtonSelectAllEventsInactive();
-        });
-      });
-      $(document).ready(function () {
-                  var $select = $('#select-event').selectize();
+            if (selected_room == "-1") {
+                return;
+            }
 
-        $select[0].selectize.on('change', function() {
-          selected_event = $select[0].selectize.getValue();
+            selected_locations = available_rooms[selected_room].locations.map(l => l.id);
+            $select_locations[0].selectize.setValue(selected_locations);
+            setButtonSelectAllLocationsInactive();
         });
+    });
+
+    $(document).ready(function () {
+        var $select_room = $('#select-room').selectize();
+
+        $select_room[0].selectize.on('change', function() {
+            selected_room = $select_room[0].selectize.getValue() || "-1";
+
+            if (selected_room == "-1") {
+                setButtonSelectAllLocationsInactive();
+                return;
+              }
+
+            let $select_locations = $('#select-locations').selectize();
+            $select_locations[0].selectize.clear();
+            $select_locations[0].selectize.clearOptions();
+
+            available_rooms[selected_room].locations.forEach(location => {
+                $select_locations[0].selectize.addOption({
+                    value: location.id,
+                    text: location.name
+                });
+            });
+
+            $select_locations[0].selectize.refreshOptions();
         });
+    });
 
     document.getElementById("start-date").onchange = (event) => {
         start_date = document.getElementById("start-date").value;
@@ -197,9 +228,7 @@
 
         let comment = document.getElementById("comment").value;
 
-        console.log(selected_event);
-
-        if (selected_event == "-1" || selected_event == null || selected_locations.length == 0) {
+        if (selected_room == "-1" || selected_locations.length == 0) {
             alert("Не все поля заполнены");
             return false;
         }
@@ -233,7 +262,7 @@
                     "end_date": end_date,
                     "end_time": end_time,
                     "locations_pk": selected_locations,
-                    "event_pk": selected_event,
+                    "event_pk": {{ event.id }},
                     "comment": comment
                   })
                 });

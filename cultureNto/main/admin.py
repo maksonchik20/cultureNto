@@ -7,7 +7,7 @@ admin.site.register(EventType)
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
-    list_display = ("date", "time", "type_event", "small_description")
+    list_display = ("date", "time", "type_event", "small_description", "btn_brone")
     list_filter = ("date", "type_event")
 
     def small_description(self, obj):
@@ -18,6 +18,12 @@ class EventAdmin(admin.ModelAdmin):
             return obj.description
 
     small_description.short_description = "Описание"
+
+    def btn_brone(self, obj):
+        return format_html(f'<a href="/add_booking_by_event/{obj.pk}" class="btn_brone">Забронировать помещение</a>')
+
+    btn_brone.short_description = "Забронировать помещение для мероприятия"
+
     # def get_form(self, request, obj=None, **kwargs):
     #     form = super(EventAdmin, self).get_form(request, obj, **kwargs)
     #     form.base_fields['type_event'].queryset = EventType.objects.filter(pk=1)
@@ -30,7 +36,7 @@ class RoomAdmin(admin.ModelAdmin):
     list_display = ("name", "btn_brone")
 
     def btn_brone(self, obj):
-        return format_html(f'<a href="/add_brone/{obj.pk}" class="btn_brone">Забронировать данное помещение</a>')
+        return format_html(f'<a href="/add_booking_by_room/{obj.pk}" class="btn_brone">Забронировать данное помещение</a>')
 
     btn_brone.short_description = "Забронировать"
 
@@ -45,8 +51,8 @@ class WorkAdmin(admin.ModelAdmin):
 
     def small_description(self, obj):
         maxlen = 120
-        if (len(obj.description) > maxlen):
-            return (obj.description)[:maxlen-3] + "..."
+        if len(obj.description) > maxlen:
+            return obj.description[:maxlen-3] + "..."
         else:
             return obj.description
 

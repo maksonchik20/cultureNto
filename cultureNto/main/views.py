@@ -223,8 +223,6 @@ def get_available_rooms(request):
             obj["locations"].append({"id": event_location.id, "name": event_location.name})
             rooms[event_location.room.first().id] = obj
 
-        print(rooms)
-
         return JsonResponse(rooms, safe=False)
     return HttpResponse("invalid request")
 
@@ -258,16 +256,25 @@ def add_booking(request):
     return HttpResponse("invalid request")
 
 
-def add_brone(request, pk):
-    room = Room.objects.filter(id=pk).first()
-    booking = Booking.objects.filter(locations__id__in=room.locations.all())
+def add_booking_by_room(request, pk):
+    room = Room.objects.get(id=pk)
     events = Event.objects.all()
     data = {
         "title": "Страница бронирования",
         "is_nav_sidebar_enabled": True,
         "available_apps": django.contrib.admin.sites.site.get_app_list(request),
-        "booking": booking,
         "room": room,
         "events": events
     }
-    return render(request, "main/brone_page.html", data)
+    return render(request, "main/booking_by_room_page.html", data)
+
+
+def add_booking_by_event(request, pk):
+    event = Event.objects.get(id=pk)
+    data = {
+        "title": "Страница бронирования",
+        "is_nav_sidebar_enabled": True,
+        "available_apps": django.contrib.admin.sites.site.get_app_list(request),
+        "event": event
+    }
+    return render(request, "main/booking_by_event_page.html", data)

@@ -17,7 +17,8 @@ urlpatterns = [
     path("events/", events),
 
     path("admin/brone", page_brone),
-    path("add_brone/<int:pk>", add_brone),
+    path("add_booking_by_room/<int:pk>", add_booking_by_room),
+    path("add_booking_by_event/<int:pk>", add_booking_by_event),
     path("get_booking_intersection", get_booking_intersection),
     path("get_available_rooms", get_available_rooms),
     path("add_booking", add_booking),
