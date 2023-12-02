@@ -1,5 +1,6 @@
 import datetime
 
+import django.contrib.admin.sites
 from django.db.models import Q
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
@@ -263,6 +264,8 @@ def add_brone(request, pk):
     events = Event.objects.all()
     data = {
         "title": "Страница бронирования",
+        "is_nav_sidebar_enabled": True,
+        "available_apps": django.contrib.admin.sites.site.get_app_list(request),
         "booking": booking,
         "room": room,
         "events": events

@@ -1146,7 +1146,7 @@ a.deletelink:focus, a.deletelink:hover {
     border-radius: 6px;
 }
 
-.btn_brone:hover {
+.btn_brone:hover:not([disabled]) {
     background-color: rebeccapurple;
     color:white;
     border-color: rebeccapurple;
