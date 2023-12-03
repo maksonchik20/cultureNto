@@ -121,9 +121,12 @@ def add_booking_by_event(request, pk):
         "available_apps": django.contrib.admin.sites.site.get_app_list(request),
         "event": event,
         "date": event.date.strftime('%Y-%m-%d'),
+        "date_plus_one_hour": (
+                datetime.datetime.combine(event.date, event.time) + datetime.timedelta(hours=1)
+        ).strftime('%Y-%m-%d'),
         "time": event.time.strftime('%H:%M'),
         "time_plus_one_hour": (
-                datetime.datetime.combine(datetime.date(1, 1, 1), event.time) + datetime.timedelta(hours=1)
+                datetime.datetime.combine(event.date, event.time) + datetime.timedelta(hours=1)
         ).strftime('%H:%M'),
     }
     print(data)
