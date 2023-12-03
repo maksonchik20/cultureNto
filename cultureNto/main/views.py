@@ -119,8 +119,14 @@ def add_booking_by_event(request, pk):
         "title": "Страница бронирования",
         "is_nav_sidebar_enabled": True,
         "available_apps": django.contrib.admin.sites.site.get_app_list(request),
-        "event": event
+        "event": event,
+        "date": event.date.strftime('%Y-%m-%d'),
+        "time": event.time.strftime('%H:%M'),
+        "time_plus_one_hour": (
+                datetime.datetime.combine(datetime.date(1, 1, 1), event.time) + datetime.timedelta(hours=1)
+        ).strftime('%H:%M'),
     }
+    print(data)
     return render(request, "main/booking_by_event_page.html", data)
 
 
