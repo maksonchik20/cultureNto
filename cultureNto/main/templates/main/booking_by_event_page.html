@@ -230,6 +230,11 @@
         updateAvailableLocations();
     };
 
+    document.getElementById("start-date").onchange(null);
+    document.getElementById("start-time").onchange(null);
+    document.getElementById("end-date").onchange(null);
+    document.getElementById("end-time").onchange(null);
+
     document.getElementById("form-booking").onsubmit = (event) => {
         event.preventDefault();
 
