@@ -4,9 +4,9 @@ from .event_type import EventType
 
 
 class Event(models.Model):
-    date = models.DateField(verbose_name="Дата мероприятия", default=datetime.date.today)
-    time = models.TimeField(verbose_name="Время мероприятия")
-    type_event = models.ForeignKey(EventType, on_delete=models.PROTECT, verbose_name="Вид мероприятия")
+    date = models.DateField(verbose_name="Дата", default=datetime.date.today)
+    time = models.TimeField(verbose_name="Время")
+    type_event = models.ForeignKey(EventType, on_delete=models.PROTECT, verbose_name="Вид")
     description = models.TextField(verbose_name="Описание")
 
     def __str__(self):
