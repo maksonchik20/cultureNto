@@ -8,11 +8,11 @@ def populate_event_type(apps, schema_editor):
 
     EventType.objects.using(schema_editor.connection.alias).bulk_create(
         [
-            EventType(name_event_type="Секция"),
-            EventType(name_event_type="Выставка"),
-            EventType(name_event_type="Репетиция"),
-            EventType(name_event_type="Концерт"),
-            EventType(name_event_type="Спектакль"),
+            EventType(name="Секция"),
+            EventType(name="Выставка"),
+            EventType(name="Репетиция"),
+            EventType(name="Концерт"),
+            EventType(name="Спектакль"),
         ]
     )
 
@@ -59,21 +59,21 @@ def populate_event(apps, schema_editor):
                 id=5,
                 date=datetime.date(2023, 11, 22),
                 time=datetime.time(10),
-                type_event=EventType.objects.filter(name_event_type="Репетиция").first(),
+                type_event=EventType.objects.get(name="Репетиция"),
                 description=EV1_DESCRIPTION
             ),
             Event(
                 id=2,
                 date=datetime.date(2023, 11, 25),
                 time=datetime.time(13, 30),
-                type_event=EventType.objects.filter(name_event_type="Выставка").first(),
+                type_event=EventType.objects.get(name="Выставка"),
                 description=EV2_DESCRIPTION
             ),
             Event(
                 id=1,
                 date=datetime.date(2023, 11, 19),
                 time=datetime.time(20),
-                type_event=EventType.objects.filter(name_event_type="Спектакль").first(),
+                type_event=EventType.objects.get(name="Спектакль"),
                 description=EV3_DESCRIPTION
             ),
         ]

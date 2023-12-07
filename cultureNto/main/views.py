@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 from django_tables2 import RequestConfig
+from .forms.club_registration import ClubRegistrationForm
 from .models import Event, Work, WorkType, Room, Booking, EventLocation
 from .tables import EventTable, RoomTable
 from django_tables2.export.export import TableExport
@@ -267,3 +268,15 @@ def worktable(request):
     data = {'title': "Рабочий стол для заявок", "header_text": "Рабочий стол для заявок", "objects": obj,
             "workTypes": WorkType.objects.all()}
     return render(request, "main/worktable.html", data)
+
+
+def club_registration(request):
+    if request.method == "POST":
+        form = ClubRegistrationForm(request.POST)
+        if form.is_valid():
+            return "OK"
+
+    else:
+        form = ClubRegistrationForm()
+
+    return render(request, "club_registration.html", {"form": form})

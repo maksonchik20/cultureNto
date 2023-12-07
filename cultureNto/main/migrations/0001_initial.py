@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
             name='EventType',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name_event_type', models.CharField(max_length=255, verbose_name='Вид мероприятия')),
+                ('name', models.CharField(max_length=255, verbose_name='Вид мероприятия')),
             ],
             options={
                 'verbose_name': 'Вид мероприятия',
