@@ -41,8 +41,6 @@
                 max_options = Number(document.getElementById("id_schedule_type").value);
             }
 
-            console.log(max_options);
-
             if (related_schedule.length >= 1) {
                 document.getElementById("id_schedule_day_1").value = related_schedule[0][0];
                 document.getElementById("id_schedule_time_start_1").value = related_schedule[0][1];
@@ -75,7 +73,7 @@
                 document.getElementById("id_schedule_time_start_2").required = !value;
                 document.getElementById("id_schedule_time_end_2").required = !value;
 
-                if (!value) {
+                if (value) {
                     document.getElementById("id_schedule_day_2").value = "";
                     document.getElementById("id_schedule_time_start_2").value = "";
                     document.getElementById("id_schedule_time_end_2").value = "";
@@ -89,7 +87,7 @@
                 document.getElementById("id_schedule_time_start_3").required = !value;
                 document.getElementById("id_schedule_time_end_3").required = !value;
 
-                if (!value) {
+                if (value) {
                     document.getElementById("id_schedule_day_3").value = "";
                     document.getElementById("id_schedule_time_start_3").value = "";
                     document.getElementById("id_schedule_time_end_3").value = "";
