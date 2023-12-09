@@ -5,9 +5,8 @@ from django.db.models import Q
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 from django_tables2 import RequestConfig
-from .forms.club_registration import ClubRegistrationForm
-from .models import Event, Work, WorkType, Room, Booking, EventLocation
-from .tables import EventTable, RoomTable
+from .models import Event, Work, WorkType, Room, Booking, EventLocation, ClubRegistration
+from .tables import EventTable, RoomTable, ClubRegistrationTable
 from django_tables2.export.export import TableExport
 import json
 from django.views.decorators.csrf import csrf_exempt
@@ -200,13 +199,13 @@ def education(request):
     available_apps = [
         {**app, **{
             "models": [
-                model for model in app["models"] if model["name"] in ["Мероприятия", "Виды работ", "Заявки"]
+                model for model in app["models"] if model["name"] in ["Виды кружков", "Преподаватели", "Расписание кружков", "Регистрации кружков"]
             ]
         }}
         for app in available_apps if app["name"] == "Данные"
     ]
 
-    table = EventTable([])
+    table = ClubRegistrationTable(ClubRegistration.objects.all())
     RequestConfig(request, paginate={"per_page": 2}).configure(table)
     export_format = request.GET.get("_export", None)
     if TableExport.is_valid_format(export_format):

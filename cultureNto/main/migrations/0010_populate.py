@@ -58,7 +58,9 @@ def populate_club_type(apps, schema_editor):
             ClubType(name="Техническое направление"),
             ClubType(name="Туристко-краеведческое направление"),
             ClubType(name="Физкультурно-спортивное направление"),
-            ClubType(name="Художественное направление")
+            ClubType(name="Художественное направление"),
+            ClubType(name="Творческое направление"),
+            ClubType(name="Хореография"),
         ]
     )
 

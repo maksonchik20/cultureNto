@@ -10,7 +10,7 @@ class ClubRegistrationForm(ModelForm):
         model = ClubRegistration
         fields = "__all__"
 
-    name = forms.CharField(max_length=255, label="Название кружка")
+    name = forms.CharField(max_length=255, label="Название кружка", widget=forms.TextInput(attrs={'size': 80}))
     datetime = forms.DateTimeField(label="Дата начала работы кружка", widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}, format="%Y-%m-%dT%H:%M"))
     type = forms.ModelChoiceField(ClubType.objects.all(), label="Вид кружка")
     locations = forms.ModelMultipleChoiceField(EventLocation.objects.all(), label="Помещение")
@@ -33,7 +33,7 @@ class ClubRegistrationForm(ModelForm):
         def check_booking_intersection(check_date_start, check_date_end):
             booking = Booking.objects.filter(
                 locations__id__in=[x.id for x in self.cleaned_data["locations"]]
-            ).filter(date_end__gt=self.cleaned_data["datetime"])
+            ).filter(date_end__gt=self.cleaned_data["datetime"]).distinct()
 
             result = []
 
@@ -51,6 +51,15 @@ class ClubRegistrationForm(ModelForm):
 
             return len(result) == 0
 
+        def check_club_schedule_intersection(check_date_start, check_date_end, adding):
+            schedule = ClubRegistration.get_club_schedule_intersection(
+                [x.id for x in self.cleaned_data["locations"]],
+                check_date_start,
+                check_date_end
+            )
+
+            return len(schedule) == 0 if adding else len(schedule) == 1
+
         if self.cleaned_data["schedule_type"] in '123':
             if self.cleaned_data["schedule_day_1"] is None or\
                self.cleaned_data["schedule_time_start_1"] is None or \
@@ -63,6 +72,9 @@ class ClubRegistrationForm(ModelForm):
 
             if not check_booking_intersection(date_start, date_end):
                 raise ValidationError("Расписание кружка пересекается с бронированием.")
+
+            if not check_club_schedule_intersection(date_start, date_end, self.instance._state.adding):
+                raise ValidationError("Расписание кружка пересекается с другим кружком.")
 
         if self.cleaned_data["schedule_type"] in '23':
             if self.cleaned_data["schedule_day_2"] is None or\
@@ -78,6 +90,9 @@ class ClubRegistrationForm(ModelForm):
             if not check_booking_intersection(date_start, date_end):
                 raise ValidationError("Расписание кружка пересекается с бронированием.")
 
+            if not check_club_schedule_intersection(date_start, date_end, self.instance._state.adding):
+                raise ValidationError("Расписание кружка пересекается с другим кружком.")
+
         if self.cleaned_data["schedule_type"] in '3':
             if self.cleaned_data["schedule_day_3"] is None or\
                self.cleaned_data["schedule_time_start_3"] is None or \
@@ -91,6 +106,9 @@ class ClubRegistrationForm(ModelForm):
 
             if not check_booking_intersection(date_start, date_end):
                 raise ValidationError("Расписание кружка пересекается с бронированием.")
+
+            if not check_club_schedule_intersection(date_start, date_end, self.instance._state.adding):
+                raise ValidationError("Расписание кружка пересекается с другим кружком.")
 
         return self.cleaned_data
 

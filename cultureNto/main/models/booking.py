@@ -26,5 +26,5 @@ class Booking(models.Model):
     def get_booking_intersection(cls, locations_pk, start_datetime, end_datetime):
         bookings = cls.objects.filter(
             locations__id__in=locations_pk,
-        ).exclude(Q(date_end__lt=start_datetime) | Q(date_start__gt=end_datetime))
+        ).exclude(Q(date_end__lt=start_datetime) | Q(date_start__gt=end_datetime)).distinct()
         return bookings

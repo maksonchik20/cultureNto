@@ -37,8 +37,8 @@ class ClubRegistration(models.Model):
         end_datetime = datetime.datetime(1, 1, end_datetime.weekday() + 1, end_datetime.hour, end_datetime.minute, end_datetime.second)
 
         club_registration = ClubRegistration.objects.filter(
-            locations__id__in=locations_pk
-        )
+            locations__in=locations_pk
+        ).distinct()
 
         result = []
 

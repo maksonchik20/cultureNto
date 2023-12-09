@@ -1,5 +1,5 @@
 import django_tables2 as tables
-from .models import Event, Room
+from .models import Event, Room, ClubRegistration
 
 
 class EventTable(tables.Table):
@@ -14,3 +14,10 @@ class RoomTable(tables.Table):
         model = Room
         template_name = "django_tables2/bootstrap.html"
         fields = ("name", )
+
+
+class ClubRegistrationTable(tables.Table):
+    class Meta:
+        model = ClubRegistration
+        template_name = "django_tables2/bootstrap.html"
+        fields = ("name", "datetime", "type", "locations", "schedule_type", "schedule", "teacher")

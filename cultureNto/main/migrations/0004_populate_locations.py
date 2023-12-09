@@ -13,7 +13,7 @@ def populate_event_location(apps, schema_editor):
             EventLocation(name="Арт-галерея (2-й сектор)"),
             EventLocation(name="Выставочный зал (1-й сектор)"),
             EventLocation(name="Выставочный зал (2-й сектор)"),
-            EventLocation(name="Театральная сцена"),
+            EventLocation(name="Школьная сцена"),
             EventLocation(name="Конференц-зал"),
             EventLocation(name="Мастерская"),
             EventLocation(name="Танцевальный зал (1-й сектор)"),
