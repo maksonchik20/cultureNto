@@ -268,15 +268,3 @@ def worktable(request):
     data = {'title': "Рабочий стол для заявок", "header_text": "Рабочий стол для заявок", "objects": obj,
             "workTypes": WorkType.objects.all()}
     return render(request, "main/worktable.html", data)
-
-
-def club_registration(request):
-    if request.method == "POST":
-        form = ClubRegistrationForm(request.POST)
-        if form.is_valid():
-            return "OK"
-
-    else:
-        form = ClubRegistrationForm()
-
-    return render(request, "club_registration.html", {"form": form})

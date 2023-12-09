@@ -1,3 +1,4 @@
+import datetime
 from django.db import models
 from .club_type import ClubType
 from .event_location import EventLocation
@@ -29,3 +30,32 @@ class ClubRegistration(models.Model):
     class Meta:
         verbose_name = 'Регистрация кружка'
         verbose_name_plural = 'Регистрации кружков'
+
+    @classmethod
+    def get_club_schedule_intersection(cls, locations_pk, start_datetime, end_datetime):
+        start_datetime = datetime.datetime(1, 1, start_datetime.weekday() + 1, start_datetime.hour, start_datetime.minute, start_datetime.second)
+        end_datetime = datetime.datetime(1, 1, end_datetime.weekday() + 1, end_datetime.hour, end_datetime.minute, end_datetime.second)
+
+        club_registration = ClubRegistration.objects.filter(
+            locations__id__in=locations_pk
+        )
+
+        result = []
+
+        for cr in club_registration:
+            exclude = True
+
+            for s in cr.schedule.all():
+                if datetime.datetime(1, 1, s.weekday.id, s.time_end.hour, s.time_end.minute, s.time_end.second) < start_datetime:
+                    continue
+
+                if datetime.datetime(1, 1, s.weekday.id, s.time_end.hour, s.time_end.minute, s.time_end.second) > end_datetime:
+                    continue
+
+                exclude = False
+                break
+
+            if not exclude:
+                result.append(cr)
+
+        return result

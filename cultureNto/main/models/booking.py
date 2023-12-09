@@ -11,7 +11,7 @@ class Booking(models.Model):
     date_start = models.DateTimeField(verbose_name="Дата начала бронирования")
     date_end = models.DateTimeField(verbose_name="Дата окончания бронирования")
     locations = models.ManyToManyField(EventLocation, verbose_name="Помещение")
-    comment = models.TextField(verbose_name="Комментарий")
+    comment = models.TextField(verbose_name="Комментарий", default="", blank=True)
 
     def __str__(self):
         locations = EventLocation.objects.filter(id__in=self.locations.all())
