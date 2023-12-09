@@ -8,11 +8,12 @@ def populate_event_type(apps, schema_editor):
 
     EventType.objects.using(schema_editor.connection.alias).bulk_create(
         [
-            EventType(name_event_type="Секция"),
-            EventType(name_event_type="Выставка"),
-            EventType(name_event_type="Репетиция"),
-            EventType(name_event_type="Концерт"),
-            EventType(name_event_type="Спектакль"),
+            EventType(name="Секция"),
+            EventType(name="Выставка"),
+            EventType(name="Репетиция"),
+            EventType(name="Концерт"),
+            EventType(name="Спектакль"),
+            EventType(name="Лекция"),
         ]
     )
 
@@ -53,28 +54,36 @@ def populate_event(apps, schema_editor):
 Спектакль будет проходить в театре "Звездная Сцена" в этот особенный вечер 19 числа. Приготовьтесь к тому, чтобы пережить невероятные моменты, которые расскажут вам о волшебстве ночного неба и пробудят в вас детскую веру в чудеса. "Волшебная Ночь Звезд" - это не просто представление, это приключение, которое оставит незабываемые впечатления и вдохновит вас на свершения.
 """
 
+    EV4_DESCRIPTION = """Лекция от Савватеева (пример пересекающейся брони перед открытием кружка)"""
+
     Event.objects.using(schema_editor.connection.alias).bulk_create(
         [
             Event(
                 id=5,
                 date=datetime.date(2023, 11, 22),
                 time=datetime.time(10),
-                type_event=EventType.objects.filter(name_event_type="Репетиция").first(),
+                type_event=EventType.objects.get(name="Репетиция"),
                 description=EV1_DESCRIPTION
             ),
             Event(
                 id=2,
                 date=datetime.date(2023, 11, 25),
                 time=datetime.time(13, 30),
-                type_event=EventType.objects.filter(name_event_type="Выставка").first(),
+                type_event=EventType.objects.get(name="Выставка"),
                 description=EV2_DESCRIPTION
             ),
             Event(
                 id=1,
                 date=datetime.date(2023, 11, 19),
                 time=datetime.time(20),
-                type_event=EventType.objects.filter(name_event_type="Спектакль").first(),
+                type_event=EventType.objects.get(name="Спектакль"),
                 description=EV3_DESCRIPTION
+            ),
+            Event(
+                date=datetime.date(2023, 11, 15),
+                time=datetime.time(12),
+                type_event=EventType.objects.get(name="Лекция"),
+                description=EV4_DESCRIPTION
             ),
         ]
     )
@@ -92,7 +101,7 @@ def populate_room(apps, schema_editor):
 
     room(1, "Арт-галерея", Q(name="Арт-галерея (1-й сектор)") | Q(name="Арт-галерея (2-й сектор)"))
     room(2, "Выставочный зал", Q(name="Выставочный зал (1-й сектор)") | Q(name="Выставочный зал (2-й сектор)"))
-    room(3, "Театральная сцена", Q(name="Театральная сцена"))
+    room(3, "Школьная сцена", Q(name="Школьная сцена"))
     room(4, "Конференц-зал", Q(name="Конференц-зал"))
     room(5, "Мастерская", Q(name="Мастерская"))
     room(6, "Танцевальный зал", Q(name="Танцевальный зал (1-й сектор)") | Q(name="Танцевальный зал (2-й сектор)"))

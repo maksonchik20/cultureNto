@@ -5,3 +5,8 @@ from .work import Work
 from .room import Room
 from .booking import Booking
 from .event_location import EventLocation
+from .weekday import Weekday
+from .teacher import Teacher
+from .club_schedule import ClubSchedule
+from .club_type import ClubType
+from .club_registration import ClubRegistration

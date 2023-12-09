@@ -8,8 +8,8 @@
     <div style="display: flex;flex-direction: column;">
         <div style="display:flex;">
             <p style="text-align:center;">
-                <a class="btnAddNewEvent" style="text-decoration: none;" href="/admin/main/event/add/?category={{ cat }}">
-                    Добавить новое мероприятие
+                <a class="btnAddNewEvent" style="text-decoration: none;" href="/admin/main/clubregistration/add/">
+                    Зарегистрировать новый кружок
                 </a>
             </p>
             <p style="text-align:center;margin-left: 1rem;">
@@ -22,7 +22,7 @@
             {% render_table table %}
         </div><br/>
         <div style="display:flex;flex-direction:column;">
-            <h3>Экспортирование данных о мероприятиях:</h3>
+            <h3>Экспортирование данных о кружках:</h3>
             <a href="{% export_url 'xls' %}">
                 Скачать  <code>.{{ 'xls' }}</code>
             </a>

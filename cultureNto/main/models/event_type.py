@@ -2,10 +2,10 @@ from django.db import models
 
 
 class EventType(models.Model):
-    name_event_type = models.CharField(max_length=255, verbose_name="Вид мероприятия")
+    name = models.CharField(max_length=255, verbose_name="Вид мероприятия")
 
     def __str__(self):
-        return f"{self.name_event_type}"
+        return f"{self.name}"
 
     class Meta:
         verbose_name = 'Вид мероприятия'

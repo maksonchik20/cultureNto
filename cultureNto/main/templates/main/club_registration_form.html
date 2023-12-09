@@ -1,0 +1,184 @@
+{% extends "admin/change_form.html" %}
+
+{% block admin_change_form_document_ready %}
+    {{ block.super }}
+    <script>
+        function schedule_type_onchange(ev) {
+            max_options = Number(document.getElementById("id_schedule_type").value);
+
+            if (max_options == 1) {
+                setGroupDisabled(2, true);
+                setGroupDisabled(3, true);
+            } else if (max_options == 2) {
+                setGroupDisabled(2, false);
+                setGroupDisabled(3, true);
+            } else {
+                setGroupDisabled(2, false);
+                setGroupDisabled(3, false);
+            }
+
+            updateAvailableWeekdaysAll();
+        };
+
+        const related_schedule = [
+            {% for s in related_schedule %}
+                [{{ s.weekday.id }}, "{{ s.time_start }}", "{{ s.time_end }}"],
+            {% endfor %}
+        ];
+
+        document.addEventListener('DOMContentLoaded', function()
+        {
+            setGroupDisabled(2, true);
+            setGroupDisabled(3, true);
+
+            let max_options = 0;
+
+            if (related_schedule.length > 0) {
+                max_options = Math.max(1, related_schedule.length);
+                document.getElementById("id_schedule_type").options[0].selected = false;
+                document.getElementById("id_schedule_type").options[max_options - 1].selected = true;
+            } else {
+                max_options = Number(document.getElementById("id_schedule_type").value);
+            }
+
+            console.log(max_options);
+
+            if (related_schedule.length >= 1) {
+                document.getElementById("id_schedule_day_1").value = related_schedule[0][0];
+                document.getElementById("id_schedule_time_start_1").value = related_schedule[0][1];
+                document.getElementById("id_schedule_time_end_1").value = related_schedule[0][2];
+            }
+
+            if (max_options >= 2) setGroupDisabled(2, false);
+            if (related_schedule.length >= 2) {
+                document.getElementById("id_schedule_day_2").value = related_schedule[1][0];
+                document.getElementById("id_schedule_time_start_2").value = related_schedule[1][1];
+                document.getElementById("id_schedule_time_end_2").value = related_schedule[1][2];
+            }
+
+            if (max_options >= 3) setGroupDisabled(3, false);
+            if (related_schedule.length == 3) {
+                setGroupDisabled(3, false);
+                document.getElementById("id_schedule_day_3").value = related_schedule[2][0];
+                document.getElementById("id_schedule_time_start_3").value = related_schedule[2][1];
+                document.getElementById("id_schedule_time_end_3").value = related_schedule[2][2];
+            }
+        });
+
+        function setGroupDisabled(group, value) {
+            if (group == 2) {
+                document.getElementById("id_schedule_day_2").disabled = value;
+                document.getElementById("id_schedule_time_start_2").disabled = value;
+                document.getElementById("id_schedule_time_end_2").disabled = value;
+
+                document.getElementById("id_schedule_day_2").required = !value;
+                document.getElementById("id_schedule_time_start_2").required = !value;
+                document.getElementById("id_schedule_time_end_2").required = !value;
+
+                if (!value) {
+                    document.getElementById("id_schedule_day_2").value = "";
+                    document.getElementById("id_schedule_time_start_2").value = "";
+                    document.getElementById("id_schedule_time_end_2").value = "";
+                }
+            } else if (group == 3) {
+                document.getElementById("id_schedule_day_3").disabled = value;
+                document.getElementById("id_schedule_time_start_3").disabled = value;
+                document.getElementById("id_schedule_time_end_3").disabled = value;
+
+                document.getElementById("id_schedule_day_3").required = !value;
+                document.getElementById("id_schedule_time_start_3").required = !value;
+                document.getElementById("id_schedule_time_end_3").required = !value;
+
+                if (!value) {
+                    document.getElementById("id_schedule_day_3").value = "";
+                    document.getElementById("id_schedule_time_start_3").value = "";
+                    document.getElementById("id_schedule_time_end_3").value = "";
+                }
+            }
+        }
+
+        const weekdays = [
+            {% for weekday in weekdays %}
+                [{{ weekday.id }}, "{{ weekday.name }}"],
+            {% endfor %}
+        ];
+
+        let available_weekdays = weekdays;
+
+        let schedule_day_1_prev = null;
+        let schedule_day_2_prev = null;
+        let schedule_day_3_prev = null;
+
+        function updateAvailableWeekdays(widget, others_widgets) {
+            weekdays.forEach(weekday => {
+                let contains = false;
+                for (let i = widget.options.length - 1; i >= 0; i--) {
+                    if (Number(widget.options[i].value) == weekday[0]) {
+                        contains = true;
+                    }
+                }
+
+                if (!contains) {
+                    widget.options.add(new Option(weekday[1], weekday[0]));
+                }
+            });
+
+            for (let i = widget.options.length - 1; i >= 0; i--) {
+                if (widget.options[i].value == "") continue;
+                if (others_widgets.map(w => Number(w.value)).includes(Number(widget.options[i].value))) {
+                    widget.options.remove(i);
+                }
+            }
+
+            sortSelect(widget);
+        }
+
+        function updateAvailableWeekdaysAll() {
+            const schedule_day_1 = document.getElementById("id_schedule_day_1");
+            const schedule_day_2 = document.getElementById("id_schedule_day_2");
+            const schedule_day_3 = document.getElementById("id_schedule_day_3");
+
+            updateAvailableWeekdays(schedule_day_1, [schedule_day_2, schedule_day_3]);
+            updateAvailableWeekdays(schedule_day_2, [schedule_day_1, schedule_day_3]);
+            updateAvailableWeekdays(schedule_day_3, [schedule_day_1, schedule_day_2]);
+        }
+
+        function schedule_day_1_onchange(ev) {
+            schedule_day_1_prev = Number(document.getElementById("id_schedule_day_1").value);
+            updateAvailableWeekdaysAll();
+        };
+
+        function schedule_day_2_onchange(ev) {
+            schedule_day_2_prev = Number(document.getElementById("id_schedule_day_2").value);
+            updateAvailableWeekdaysAll();
+        };
+
+        function schedule_day_3_onchange(ev) {
+            schedule_day_3_prev = Number(document.getElementById("id_schedule_day_3").value);
+            updateAvailableWeekdaysAll();
+        };
+
+        function sortSelect(selElem) {
+           var tmpAry = new Array();
+
+           for (var i = 0; i < selElem.options.length; i++) {
+              tmpAry[i] = new Array();
+              tmpAry[i][0] = selElem.options[i].value;
+              tmpAry[i][1] = selElem.options[i].text;
+              tmpAry[i][2] = selElem.options[i].selected;
+           }
+
+           tmpAry.sort();
+
+           while (selElem.options.length > 0) {
+              selElem.options[0] = null;
+           }
+
+           for (var i = 0; i < tmpAry.length; i++) {
+              var op = new Option(tmpAry[i][1], tmpAry[i][0]);
+              selElem.options[i] = op;
+              selElem.options[i].selected = tmpAry[i][2];
+           }
+        }
+    </script>
+{% endblock %}
