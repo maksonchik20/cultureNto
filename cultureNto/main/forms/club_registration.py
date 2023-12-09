@@ -30,6 +30,9 @@ class ClubRegistrationForm(ModelForm):
     schedule_time_end_3 = forms.TimeField(widget=forms.TimeInput(attrs={'type': 'time'}), label="время окончания занятий", required=False)
 
     def clean(self):
+        if not self.cleaned_data.get("locations"):
+            raise ValidationError("Должно быть выбрано хотя бы одно помещение.")
+
         def check_booking_intersection(check_date_start, check_date_end):
             booking = Booking.objects.filter(
                 locations__id__in=[x.id for x in self.cleaned_data["locations"]]
@@ -58,7 +61,7 @@ class ClubRegistrationForm(ModelForm):
                 check_date_end
             )
 
-            return len(schedule) == 0 if adding else len(schedule) == 1
+            return len(schedule) == 0 if adding else len(schedule) <= 1
 
         if self.cleaned_data["schedule_type"] in '123':
             if self.cleaned_data["schedule_day_1"] is None or\
@@ -69,6 +72,9 @@ class ClubRegistrationForm(ModelForm):
             date_start = datetime.datetime.combine(datetime.date(1, 1, self.cleaned_data["schedule_day_1"].id), self.cleaned_data["schedule_time_start_1"])
             date_end = datetime.datetime.combine(datetime.date(1, 1, self.cleaned_data["schedule_day_1"].id),
                                                    self.cleaned_data["schedule_time_end_1"])
+
+            if date_end < date_start:
+                raise ValidationError("Время конца предшествует времени начала занятий.")
 
             if not check_booking_intersection(date_start, date_end):
                 raise ValidationError("Расписание кружка пересекается с бронированием.")
@@ -87,6 +93,9 @@ class ClubRegistrationForm(ModelForm):
             date_end = datetime.datetime.combine(datetime.date(1, 1, self.cleaned_data["schedule_day_2"].id),
                                                  self.cleaned_data["schedule_time_end_2"])
 
+            if date_end < date_start:
+                raise ValidationError("Время конца предшествует времени начала занятий.")
+
             if not check_booking_intersection(date_start, date_end):
                 raise ValidationError("Расписание кружка пересекается с бронированием.")
 
@@ -103,6 +112,9 @@ class ClubRegistrationForm(ModelForm):
                                                    self.cleaned_data["schedule_time_start_3"])
             date_end = datetime.datetime.combine(datetime.date(1, 1, self.cleaned_data["schedule_day_3"].id),
                                                  self.cleaned_data["schedule_time_end_3"])
+
+            if date_end < date_start:
+                raise ValidationError("Время конца предшествует времени начала занятий.")
 
             if not check_booking_intersection(date_start, date_end):
                 raise ValidationError("Расписание кружка пересекается с бронированием.")
