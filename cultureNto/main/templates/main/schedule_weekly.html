@@ -1,0 +1,33 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_modify %}
+{% load render_table from django_tables2 %}
+{% load export_url from django_tables2 %}
+{% load static %}
+
+{% block content %}
+    <div style="display: flex;flex-direction: column;">
+        <div style="display:flex;">
+            <p style="text-align:center;">
+                <a class="btnAddNewEvent" style="text-decoration: none;" href="/admin/main/clubregistration/add/">
+                    Зарегистрировать новый кружок
+                </a>
+            </p>
+            </p>
+        </div>
+        <div>
+            {% render_table table %}
+        </div><br/>
+        <div style="display:flex;flex-direction:column;">
+            <h3>Экспортирование данных о кружках:</h3>
+            <a href="{% export_url 'xls' %}">
+                Скачать  <code>.{{ 'xls' }}</code>
+            </a>
+            <a href="{% export_url 'xlsx' %}">
+                Скачать  <code>.{{ 'xlsx' }}</code>
+            </a>
+            <a href="{% export_url 'json' %}">
+                Скачать  <code>.{{ 'json' }}</code>
+            </a>
+        </div>
+    </div>
+{% endblock %}

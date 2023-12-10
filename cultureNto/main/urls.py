@@ -21,6 +21,7 @@ urlpatterns = [
     path("get_booking_intersection", get_booking_intersection),
     path("get_available_rooms", get_available_rooms),
     path("add_booking", add_booking),
+    path("schedule_weekly/", schedule_weekly_table),
     
     # path("tabletest/", tableRender)
 ]

@@ -5,8 +5,8 @@ from django.db.models import Q
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 from django_tables2 import RequestConfig
-from .models import Event, Work, WorkType, Room, Booking, EventLocation, ClubRegistration
-from .tables import EventTable, RoomTable, ClubRegistrationTable
+from .models import Event, Work, WorkType, Room, Booking, EventLocation, ClubRegistration, ClubSchedule
+from .tables import EventTable, RoomTable, ClubRegistrationTable, SimpleTable
 from django_tables2.export.export import TableExport
 import json
 from django.views.decorators.csrf import csrf_exempt
@@ -267,3 +267,50 @@ def worktable(request):
     data = {'title': "Рабочий стол для заявок", "header_text": "Рабочий стол для заявок", "objects": obj,
             "workTypes": WorkType.objects.all()}
     return render(request, "main/worktable.html", data)
+
+def schedule_weekly_table(request):
+    available_apps = django.contrib.admin.sites.site.get_app_list(request)
+
+    available_apps = [
+        {**app, **{
+            "models": [
+                model for model in app["models"] if model["name"] in ["Мероприятия", "Виды работ", "Заявки"]
+            ]
+        }}
+        for app in available_apps if app["name"] == "Данные"
+    ]
+    dataTable = []
+    week = {
+        "Понедельник": "monday",
+        "Вторник": "tuesday",
+        "Среда": "wednesday",
+        "Четверг": "thursday",
+        "Пятница": "friday",
+        "Суббота": "saturday",
+        "Воскресенье": "sunday",
+    }
+    for el in ClubRegistration.objects.all():
+        dataTableNewEl = {}
+        dataTableNewEl["name"] = f"<b>{el.name}</b>"
+        locations = []
+        for location in el.locations.all():
+            locations.append(str(location))
+        locations = ", ".join(locations)
+        for day in el.schedule.all():
+            dataTableNewEl[week[day.weekday.name]] = f"<b>С {day.time_start} до {day.time_end}.</b> <b>Помещения:</b> {locations}. <b>Преподаватель:</b> {el.teacher}"
+        dataTable.append(dataTableNewEl)
+    
+    table = SimpleTable(dataTable)
+    data = {
+        "title": "Расписание занятий на неделю",
+        "is_nav_sidebar_enabled": True,
+        "available_apps": available_apps,
+        "table": table,
+        "cat": "Расписание занятий на неделю"
+    }
+    RequestConfig(request).configure(table)
+    export_format = request.GET.get("_export", None)
+    if TableExport.is_valid_format(export_format):
+        exporter = TableExport(export_format, table)
+        return exporter.response(f"table.{export_format}")
+    return render(request, "main/schedule_weekly.html", data)
